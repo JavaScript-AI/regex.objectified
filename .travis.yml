@@ -2,5 +2,4 @@ language: node_js
 node_js:
   - "node"
   - "iojs"
-script:
-  "npm test"
+script: ./regex.objectified.js
