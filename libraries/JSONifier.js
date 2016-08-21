@@ -21,7 +21,8 @@ function stringToJSON( RegExArg ){
       }
     ],
     debug = {
-      "tree_height" : 0;
+      "tree_height" : 0,
+      "string_tracker" : [ 0 ] //Used for tracking unknown strings.
     },
     loop = {
       "r_i" : 0 //result_JSON index
@@ -81,7 +82,7 @@ function stringToJSON( RegExArg ){
           if( match2[ 5 ].length != 0 ){
             result_JSON[ loop.r_i+1 ].regex = result_JSON[ loop.r_i ].regex.substring( 2 );
             result_JSON[ loop.r_i ].regex = '\\' + match2[ 4 ];
-            result_JSON[ loop.r_i ].token_type = "reference";
+            result_JSON[ loop.r_i ].token_type = "escape::reference";
           }
         }else
         
@@ -94,6 +95,8 @@ function stringToJSON( RegExArg ){
         }
         
         result_JSON[ loop.r_i+1 ].token_type = "string";
+        debug.string_tracker[] = loop.r_i + 1;
+        
       }else
       
       //In the case that there is no string following "\"
