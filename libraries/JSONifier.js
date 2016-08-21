@@ -26,7 +26,7 @@ function stringToJSON( RegExArg ){
       
       //Are the first few characters in the following string a SPECIAL escape sequence?
       
-      if( ( match2 = /^(\d\d\d?)|^(x[A-Fa-f0-9][A-Fa-f0-9])|^(u[A-Fa-f0-9][A-Fa-f0-9][A-Fa-f0-9][A-Fa-f0-9])|^(c[A-Za-z])|^(0)/g.exec( result_JSON[ loop.r_i ].regex.substring( match[ 0 ].length ) ) ) != null ){
+      if( ( match2 = /^(\d\d\d?)|^(x[A-Fa-f0-9][A-Fa-f0-9])|^(u[A-Fa-f0-9][A-Fa-f0-9][A-Fa-f0-9][A-Fa-f0-9])|^(c[A-Za-z])|^(0)|^([1-9])/g.exec( result_JSON[ loop.r_i ].regex.substring( match[ 0 ].length ) ) ) != null ){
         
         //Is the SPECIAL escape sequence an octal escape?
         
@@ -59,6 +59,14 @@ function stringToJSON( RegExArg ){
           result_JSON[ loop.r_i ].regex = '\\' + match2[ 4 ];
           result_JSON[ loop.r_i ].token_type = "escape::control_character";
         }
+        
+        //Is the SPECIAL escape sequence NOT even an escape sequence, but a BACK REFERENCE?
+        
+        if( match2[ 5 ].length != 0 ){
+          result_JSON[ loop.r_i+1 ].regex = result_JSON[ loop.r_i ].regex.substring( 2 );
+          result_JSON[ loop.r_i ].regex = '\\' + match2[ 4 ];
+          result_JSON[ loop.r_i ].token_type = "reference";
+        }
       }else
       
       //In the case that the first few characters in the following string are a REGULAR escape sequence
@@ -80,5 +88,3 @@ function stringToJSON( RegExArg ){
     }
   }
 }
-  
-  
