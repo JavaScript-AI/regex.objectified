@@ -111,12 +111,71 @@ function stringToObj( RegExArg ){
           
           //Is the SPECIAL escape sequence an octal escape?
           
-          if( match2[ 1 ].length != 0 ){
+          if( match2[ 1 ].length != 0 )
+          {
             this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( match2[ 1 ].length );
             this.tokens[ loop.t_i.first ].regex = '\\' + match2[ 1 ];
             this.tokens[ loop.t_i.first ].type = "escape::octan::len" + match2[ 1 ].length;
           }
+          
+          //Is the SPECIAL escape sequence a hexadecimal escape?
+          
+          if( match2[ 2 ].length != 0 )
+          {
+            this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 4 );
+            this.tokens[ loop.t_i.first ].regex = '\\' + match2[ 2 ];
+            this.tokens[ loop.t_i.first ].type = "escape::hexadecimal";
+          }
+          
+          //Is the SPECIAL escape sequence an ES5 unicode escape?
+          
+          if( match2[ 3 ].length != 0 )
+          {
+            this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 6 );
+            this.tokens[ loop.t_i.first ].regex = '\\' + match2[ 3 ];
+            this.tokens[ loop.t_i.first ].type = "escape::unicode::ES5";
+          }
+          
+          //Is the SPECIAL escape sequence a control character escape?
+          
+          if( match2[ 4 ].length != 0 )
+          {
+            this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 3 );
+            this.tokens[ loop.t_i.first ].regex = '\\' + match2[ 4 ];
+            this.tokens[ loop.t_i.first ].type = "escape::control_character";
+          }
+          
+          //Is the SPECIAL escape sequence NOT even an escape sequence, but a BACK REFERENCE?
+          
+          if( match2[ 5 ].length != 0 )
+          {
+            this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 2 );
+            this.tokens[ loop.t_i.first ].regex = '\\' + match2[ 5 ];
+            this.tokens[ loop.t_i.first ].type = "escape::reference";
+          }
         }
+        
+        else //In the case that the first few characters in the following string are a REGULAR escape sequence
+        
+        {
+          this.tokens[ loop.t_i,first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 2 );
+          this.tokens[ loop.t_i.first ].regex = '\\' + this.tokens[ loop.t_i.first ].regex.substring( 1, 2 );
+          this.tokens[ loop.t_i.first ].type = "escape";
+        }
+        
+        //All newly made unknown strings will be identified as strings and tracked.
+        
+        //ADD FIX HERE
+        //ADD FIX HERE
+        //ADD FIX HERE
+        //ADD FIX HERE
+        //ADD FIX HERE
+        //ADD FIX HERE
+        //ADD FIX HERE
+        //ADD FIX HERE
+        //ADD FIX HERE
+        //ADD FIX HERE
+        
       }
       
       else //In the case that there is no string following "\"
@@ -127,51 +186,9 @@ function stringToObj( RegExArg ){
     }
   }
 }
-          
-          //Is the SPECIAL escape sequence a hexadecimal escape?
-          
-          //remember to change VERBAGES!!!
-          //remember to change VERBAGES!!!
-          //remember to change VERBAGES!!!
-          //remember to change VERBAGES!!!
-          //remember to change VERBAGES!!!
-          //remember to change VERBAGES!!!
-          //remember to change VERBAGES!!!
-          //remember to change VERBAGES!!!
-          //remember to change VERBAGES!!!
-          
-          if( match2[ 2 ].length != 0 ){
-            result_JSON[ loop.r_i+1 ].regex = result_JSON[ loop.r_i ].regex.substring( 4 );
-            result_JSON[ loop.r_i ].regex = '\\' + match2[ 2 ];
-            result_JSON[ loop.r_i ].token_type = "escape::hexadecimal";
-          }
-          
-          //Is the SPECIAL escape sequence an ES5 unicode escape?
-          
-          if( match2[ 3 ].length != 0 ){
-            result_JSON[ loop.r_i+1 ].regex = result_JSON[ loop.r_i ].regex.substring( 6 );
-            result_JSON[ loop.r_i ].regex = '\\' + match2[ 3 ];
-            result_JSON[ loop.r_i ].token_type = "escape::unicode::ES5";
-          }
-          
-          //Is the SPECIAL escape sequence a control character escape?
-          
-          if( match2[ 4 ].length != 0 ){
-            result_JSON[ loop.r_i+1 ].regex = result_JSON[ loop.r_i ].regex.substring( 3 );
-            result_JSON[ loop.r_i ].regex = '\\' + match2[ 4 ];
-            result_JSON[ loop.r_i ].token_type = "escape::control_character";
-          }
-          
-          //Is the SPECIAL escape sequence NOT even an escape sequence, but a BACK REFERENCE?
-          
-          if( match2[ 5 ].length != 0 ){
-            result_JSON[ loop.r_i+1 ].regex = result_JSON[ loop.r_i ].regex.substring( 2 );
-            result_JSON[ loop.r_i ].regex = '\\' + match2[ 4 ];
-            result_JSON[ loop.r_i ].token_type = "escape::reference";
-          }
         }else
         
-        //In the case that the first few characters in the following string are a REGULAR escape sequence
+        
         
         {
           result_JSON[ loop.r_i+1 ].regex = regex.substring( 2 );
