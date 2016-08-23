@@ -77,163 +77,147 @@ function stringToObj( RegExArg ){
     
     //If the loop condition passes, create a new token and assign it to the substring that starts with the first instance of "\"
     
-  }
-  
-    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
-    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
-    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
-    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
-    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
-    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
-    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
-    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
-    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
-    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
-    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
-  
     this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( match.index );
-    this.tokens[ loop.t_i.first+1 ].type = "string"; //Debugger will not be tracking this string YET
+    this.tokens[ loop.t_i.first+1 ].type = "string"; //Debugger will not track BRAND NEW strings until they have been checked first
     
-    //Create token for the unknown string before the escape character
-    //Debugger does not need to add a tracker for this one as it is already tracking the string at index 0
+    //Create token for the unknown string before the escape character, then track it, as it has already been processed
     
     this.tokens[ loop.t_i.first ].regex = this.tokens[ loop.t_i.first ].regex.substring( 0, match.index );
     this.tokens[ loop.t_i.first ].type = "string";
+    debug.string_tracker.first[] = loop.t_i.first; //tracking the already-checked string
     
-    //starting by increasing loop.t_i.first by 1, loop through matches (escapes) found in the unknown strings
-    //the loop only continues if the token index is less than the entire tokens length AND if a match exists
+    //increase tokens index by 1 to start searching the unknown and BRAND NEW string for escape SEQUENCES at the beginning, because that is where the escape character "\" is found
     
-    for( loop.t_i.first++; this.tokens.length > loop.t_i.first && ( match = /^\\/.exec( this.tokens[ loop.t_i.first ].regex ) ) != null; loop.t_i.first++ )
+    loop.t_i.first++;
+    
+    //Does the string following the matching "\" (the remainder of the string following the first character ([0])) from the match way up above have a length that is greater than 0?
+    //i.e. Does the string following the matching "\" have a length greater than 0?
+    
+    if( this.tokens[ loop.t_i.first ].regex.substring( 1 ).length > 0 )
     {
       
-      //Does the string following the matching "\" have a length greater than 0?
+      //Are the first few characters in the following string a SPECIAL escape sequence? (this is the start for the prep of this question, continue downwards for the check itself)
+      //(that matche these prepared regex patterns?):
+        
+      var escapes = [
+          "^(\\d\\d\\d?)", //Octal
+          "^(x[A-Fa-f0-9]{2})", //Hexadecimal
+          "^(u[A-Fa-f0-9]{4})", //Unicode
+          "^(c[A-Za-z])", //Control Character
+          "^([1-9])" //Back Reference
+        ],
+        regex_string; //This is used for creating the regex that finds the escapes
       
-      if( this.tokens[ loop.t_i.first ].regex.substring( match[ 0 ].length ).length > 0 )
-      {
+      //Synthesize "regex_string" from the "escapes" array
+      
+      for(
         
-        //Are the first few characters in the following string a SPECIAL escape sequence? (prep)
-        //Using these escape regexes:
+        //Reinitialize regex_string (actually escape in this case) index
         
-        var escapes = [
-            "^(\\d\\d\\d?)", //Octal
-            "^(x[A-Fa-f0-9]{2})", //Hexadecimal
-            "^(u[A-Fa-f0-9]{4})", //Unicode
-            "^(c[A-Za-z])", //Control Character
-            "^([1-9])" //Back Reference
-          ],
-          regex_string; //This is used for creating the regex that finds the escapes
+        loop.r_i = 0;
         
-        //Create regex_string
+        //If the regex_string index is less than the amount of elements in the escape array, execute the loop
         
-        for( loop.r_i = 0; escapes.length > loop.r_i; loop.r_i++ )
-          regex_string = regex_string + ( loop.r_i === 0 ? "/" : "|" ) + escapes[ loop.r_i ];
-        regex_string = regex_string + "/";
+        loop.r_i > escapes.length;
         
-        //Are the first few characters in the following string a SPECIAL escape sequence? (check)
+        //increment the regex_string index by 1 after each loop
         
-        if( ( match2 = new RegExp( regex_string ).exec( this.tokens[ loop.t_i.first ].regex.substring( match[ 0 ].length ) ) ) != null)
-        {
-          
-          //Is the SPECIAL escape sequence an octal escape?
-          
-          if( match2[ 1 ].length != 0 )
-          {
-            this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( match2[ 1 ].length );
-            this.tokens[ loop.t_i.first ].regex = '\\' + match2[ 1 ];
-            this.tokens[ loop.t_i.first ].type = "escape::octan::len" + match2[ 1 ].length;
-          }
-          
-          //Is the SPECIAL escape sequence a hexadecimal escape?
-          
-          if( match2[ 2 ].length != 0 )
-          {
-            this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 4 );
-            this.tokens[ loop.t_i.first ].regex = '\\' + match2[ 2 ];
-            this.tokens[ loop.t_i.first ].type = "escape::hexadecimal";
-          }
-          
-          //Is the SPECIAL escape sequence an ES5 unicode escape?
-          
-          if( match2[ 3 ].length != 0 )
-          {
-            this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 6 );
-            this.tokens[ loop.t_i.first ].regex = '\\' + match2[ 3 ];
-            this.tokens[ loop.t_i.first ].type = "escape::unicode::ES5";
-          }
-          
-          //Is the SPECIAL escape sequence a control character escape?
-          
-          if( match2[ 4 ].length != 0 )
-          {
-            this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 3 );
-            this.tokens[ loop.t_i.first ].regex = '\\' + match2[ 4 ];
-            this.tokens[ loop.t_i.first ].type = "escape::control_character";
-          }
-          
-          //Is the SPECIAL escape sequence NOT even an escape sequence, but a BACK REFERENCE?
-          
-          if( match2[ 5 ].length != 0 )
-          {
-            this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 2 );
-            this.tokens[ loop.t_i.first ].regex = '\\' + match2[ 5 ];
-            this.tokens[ loop.t_i.first ].type = "escape::reference";
-          }
-        }
+        loop.r_i++;
         
-        else //In the case that the first few characters in the following string are a REGULAR escape sequence
+      ){
         
-        {
-          this.tokens[ loop.t_i,first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 2 );
-          this.tokens[ loop.t_i.first ].regex = '\\' + this.tokens[ loop.t_i.first ].regex.substring( 1, 2 );
-          this.tokens[ loop.t_i.first ].type = "escape";
-        }
+        //if the loop condition passes:
+        //self-add to regex_string the separation/beginning character ("|" / "/") followed by the next escape sequence to match for
         
-        //All newly made unknown strings will be identified as strings and tracked.
-        
-        //ADD FIX HERE
-        //ADD FIX HERE
-        //ADD FIX HERE
-        //ADD FIX HERE
-        //ADD FIX HERE
-        //ADD FIX HERE
-        //ADD FIX HERE
-        //ADD FIX HERE
-        //ADD FIX HERE
-        //ADD FIX HERE
-        
+        regex_string = regex_string + ( 
+          loop.r_i === 0 ?
+          "/" : "|"
+          )
+          + escapes[ loop.r_i ];
       }
       
-      else //In the case that there is no string following "\"
+      //once the loop finishes through the escpaes array, finish it off with a terminating regex character ("/")
       
+      regex_string = regex_string + "/";
+      
+      //Are the first few characters in following the escape character a SPECIAL escape sequence? (this is the actual check)
+      
+      if( ( match = new RegExp( regex_string ).exec( this.tokens[ loop.t_i.first ].regex.substring( 1 ) ) ) != null )
       {
+          
+        //Is the SPECIAL escape sequence an octal escape?
         
-      }
-    }
-  }
-}
-        }else
-        
-        
-        
+        if( match[ 1 ].length != 0 )
         {
-          result_JSON[ loop.r_i+1 ].regex = regex.substring( 2 );
-          result_JSON[ loop.r_i ].regex = '\\' + result_JSON[ loop.r_i ].regex.substring( 1, 2 );
-          result_JSON[ loop.r_i ].token_type = "escape";
+          this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( match[ 1 ].length );
+          this.tokens[ loop.t_i.first ].regex = '\\' + match[ 1 ];
+          this.tokens[ loop.t_i.first ].type = "escape::octan::len" + match[ 1 ].length;
         }
         
-        result_JSON[ loop.r_i+1 ].token_type = "string";
-        debug.string_tracker[] = loop.r_i + 1;
+        //Is the SPECIAL escape sequence a hexadecimal escape?
         
-      }else
+        if( match[ 2 ].length != 0 )
+        {
+          this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 4 );
+          this.tokens[ loop.t_i.first ].regex = '\\' + match[ 2 ];
+          this.tokens[ loop.t_i.first ].type = "escape::hexadecimal";
+        }
+        
+        //Is the SPECIAL escape sequence an ES5 unicode escape?
+        
+        if( match[ 3 ].length != 0 )
+        {
+          this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 6 );
+          this.tokens[ loop.t_i.first ].regex = '\\' + match[ 3 ];
+          this.tokens[ loop.t_i.first ].type = "escape::unicode::ES5";
+        }
+          
+        //Is the SPECIAL escape sequence a control character escape?
+          
+        if( match[ 4 ].length != 0 )
+        {
+          this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 3 );
+          this.tokens[ loop.t_i.first ].regex = '\\' + match[ 4 ];
+          this.tokens[ loop.t_i.first ].type = "escape::control_character";
+        }
+          
+        //Is the SPECIAL escape sequence NOT even an escape sequence, but a BACK REFERENCE?
+          
+        if( match[ 5 ].length != 0 )
+        {
+          this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 2 );
+          this.tokens[ loop.t_i.first ].regex = '\\' + match[ 5 ];
+          this.tokens[ loop.t_i.first ].type = "escape::reference";
+        }
+      }
       
-      //In the case that there is no string following "\"
+      else //In the case that the first few characters in the following string are a REGULAR escape sequence
       
       {
-        result_JSON[ loop.r_i ].regex = '\\';
-        result_JSON[ loop.r_i ].token_type = "string";
+        this.tokens[ loop.t_i,first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 2 );
+        this.tokens[ loop.t_i.first ].regex = this.tokens[ loop.t_i.first ].regex.substring( 0, 2 );
+        this.tokens[ loop.t_i.first ].type = "escape";
       }
-    }
-  }
+      
+      this.tokens[ loop.t_i.first+1 ].regex = "string";
+      debug.string_tracker.first[] = loop.t_i.first; //tracking the just-now-checked string
+      
+      
+    } //original loop
+    
+    else //In the case that there is no string following "\"
+    
+    {
+      this.tokens[ loop.t_i.first ].regex = '\\';
+      this.tokens[ loop.t_i.first ].type = 'string';
+      
+      //this string does not need further tracking as it is identified as a non-escape escape char "\";
+      
+    } //check for SPECIAL ESCAPES, REGULAR ESCAPES, and Non-escape "\" strings
+    
+  } //the escape-finding loop 
+  
+} //the stringToObject function
   
   //Create mini result_JSON for inserting new elements
   
