@@ -1,6 +1,8 @@
 # regex.objectified
 An Object-Oriented variation of regex - also extends regex's basic features
 
+> Coming soon... Only being developed in JavaScript currently
+
 # Language Support:
 
 | Language    | Version |
