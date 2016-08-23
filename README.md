@@ -1,7 +1,19 @@
 # regex.objectified
 An Object-Oriented variation of regex - also extends regex's basic features
 
-# Currently only being developed in JavaScript
-> Currently under Draft (Draft 3)
+> Coming soon... Only being developed in JavaScript currently
 
-Coming Soon...
+## Language Support:
+
+| Language    | Version |
+| ----------- | ------- |
+| JavaScript: | 0.3.1a  |
+
+## *Coming Soon...* JavaScript Library
+
+> Currently under Pre-Release ( 0.-.- ) Draft 3 ( -.3.- ) Revision 1 ( -.-.1 ) Open-Alpha ( -.-.-a )
+
+| Release  | Version (Branch/Folder Link) |
+| -------- | ---------------------------- |
+| *stable* | -.-.-                        |
+| alpha    | 0.3.1a                       |
