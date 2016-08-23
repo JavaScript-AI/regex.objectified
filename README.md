@@ -12,3 +12,8 @@ An Object-Oriented variation of regex - also extends regex's basic features
 ## *Coming Soon...* JavaScript Library
 
 > Currently under Pre-Release ( 0.-.- ) Draft 3 ( -.3.- ) Revision 1 ( -.-.1 ) Open-Alpha ( -.-.-a )
+
+| Release  | Version (Branch/Folder Link) |
+| -------- | ---------------------------- |
+| *stable* | -.-.-                        |
+| alpha    | 0.3.1a                       |
