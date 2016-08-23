@@ -58,14 +58,39 @@ function stringToObj( RegExArg ){
       "r_i" : 0 //used for creating regex strings for searching
     };
   
-  //Does the RegExArg inner (current) value have escape sequences ("\")?
+  for(
+    
+    //Reinitialize The first used token index
+    
+    loop.t_i.first = 0;
+    
+    //If the token index is less than the length of tokens, and there is an escape sequence ("\") within the currently checked token's regex
+    //Execute the loop
+    
+    loop.t_i.first < this.tokens.length &&
+      ( match = /\\/.exec( this.tokens[ loop.t_i.first ].regex ) ) != null;
+    
+    //Increment the first used token index after each loop
+    
+    loop.t_i.first++
+  ){
+    
+    //If the loop condition passes, create a new token and assign it to the substring that starts with the first instance of "\"
+    
+  }
   
-  if( ( match = /\\/.exec( this.tokens[ loop.t_i.first ].regex ) ) != null )
-  {
-    
-    //Create new element in tokens and assign it to the substring that starts with the first instance of "\"
-    //This one will be used for creating the escape token
-    
+    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
+    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
+    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
+    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
+    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
+    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
+    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
+    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
+    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
+    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
+    //BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK BOOKMARK
+  
     this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( match.index );
     this.tokens[ loop.t_i.first+1 ].type = "string"; //Debugger will not be tracking this string YET
     
