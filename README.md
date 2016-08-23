@@ -16,4 +16,4 @@ An Object-Oriented variation of regex - also extends regex's basic features
 | Release  | Version (Branch/Folder Link)                                                       |
 | -------- | ---------------------------------------------------------------------------------- |
 | *stable* | -.-.-                                                                              |
-| alpha    | [0.3.1a](https://github.com/smartguy1196/regex.objectified/tree/JavaScript-0.3.1a) |
+| alpha    | [0.3.1a](https://github.com/smartguy1196/regex.objectified/tree/JavaScript) |
