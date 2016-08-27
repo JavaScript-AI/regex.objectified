@@ -4,7 +4,7 @@ function stringToObj( RegExArg ){
   
   //Argument must start with "/", but we don't want it as it isn't useful
   
-  if( /^\//.test( RegExArg ) )
+  if( RegExArg.charAt(0) === "/" )
   {
     RegExArg = RegExArg.substring( 1 );
   }
