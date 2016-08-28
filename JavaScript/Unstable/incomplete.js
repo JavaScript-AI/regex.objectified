@@ -214,7 +214,7 @@ function stringToObj( RegExArg ){
       
     } //check for SPECIAL ESCAPES, REGULAR ESCAPES, and Non-escape "\" strings
     
-  } //the escape-finding loop
+  } //the escape-char-seq-detecting loop
 
   //NOW we do character class detection
 
@@ -244,7 +244,10 @@ function stringToObj( RegExArg ){
 
     var regex_string = "/\\" + debug.track_sync.searchingFor + "/";
 
-    while( ( match = ( new RegExp( regex_string ) ).exec( //reason for loop instead of if-condition is that regex_string is intended on changing if there are no tokens in between "[" and "]" and the following "["/"]" pairs
+    //reason for loop instead of if-condition is that regex_string is intended on changing if there are no tokens in between "[" and "]" and the following "["/"]" pairs and
+    //this loop will be used for splicing the tokens array
+
+    while( ( match = ( new RegExp( regex_string ) ).exec(
       this.tokens[ 
         debug.string_tracker[ loop.st_i ]
       ].regex.substring( 1 ) 
@@ -256,7 +259,8 @@ function stringToObj( RegExArg ){
         //after-slice (old) tokens
       //then rejoin them
 
-    }
-  }
+    } //token-splicing loop
+
+  } //character-class-detecting loop
   
 } //the stringToObject function
