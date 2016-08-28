@@ -7,13 +7,13 @@ An Object-Oriented variation of regex - also extends regex's basic features
 
 | Language    | Version |
 | ----------- | ------- |
-| JavaScript: | 0.3.1a  |
+| JavaScript: | 0.2.0-a  |
 
 ## *Coming Soon...* JavaScript Library
 
 > Currently under Pre-Release ( 0.-.- ) Draft 3 ( -.3.- ) Revision 1 ( -.-.1 ) Open-Alpha ( -.-.-a )
 
-| Release  | Version (Branch/Folder Link)                                                       |
-| -------- | ---------------------------------------------------------------------------------- |
-| *stable* | -.-.-                                                                              |
-| alpha    | [0.3.1a](https://github.com/smartguy1196/regex.objectified/tree/JavaScript) |
+| Release    | Version (Branch/Folder Link)                                                 |
+| ---------- | ---------------------------------------------------------------------------- |
+| *unstable* | [0.1.5]                                                                      |
+| alpha      | [0.2.0-a](https://github.com/smartguy1196/regex.objectified/tree/JavaScript) |
