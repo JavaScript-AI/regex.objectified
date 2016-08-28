@@ -1,6 +1,8 @@
 //Directly convert String to Object
 
 function stringToObj( RegExArg ){
+
+  //NOW we initialize the process and the object
   
   //Argument must start with "/", but we don't want it as it isn't useful
   
@@ -44,7 +46,8 @@ function stringToObj( RegExArg ){
       "string_tracker" : { //Used for tracking UNIDENTIFIED strings. Main and Mini alternate between indeces 0 and 1 respectively
         "first" : [ 0 ], 
         "second" : [ 0 ]
-      }
+      },
+      "track_sync" //Used for variables that are associated with string tracker (used for looping when string_tracker is being looped over; holds data continuously regardless of the string_tracker loop)
     },
     loop = {
       "t_i" : { //token index. Main and Mini alternate between indeces 0 and 1 respectively
@@ -57,6 +60,8 @@ function stringToObj( RegExArg ){
       },
       "r_i" : 0 //used for creating regex strings for searching
     };
+
+  //NOW we do escape sequence/character detection
   
   for(
     
@@ -215,6 +220,16 @@ function stringToObj( RegExArg ){
       
     } //check for SPECIAL ESCAPES, REGULAR ESCAPES, and Non-escape "\" strings
     
-  } //the escape-finding loop 
+  } //the escape-finding loop
+
+  //NOW we do character class detection
+
+  //the detection process will search each unidentified string token ONCE for bits and pieces of character classes and group them together into an class-token
+
+  debug.track_sync = { //initiate what data the loop needs to know and keep for each loop
+    "searchingFor" = "[", //what is currently being searched for
+    "isBroken" = false, //is true when the class token has been found to span over several existing tokens, instead of just one
+    "broken_tokens" //array of all tokens except for the first unidentified string token that have had a class token detected parenting them
+  }
   
 } //the stringToObject function
