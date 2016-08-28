@@ -76,7 +76,8 @@ function stringToObj( RegExArg ){
     
     //If the loop condition passes, create a new token and assign it to the substring that starts with the first instance of "\"
     
-    this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( match.index );
+    this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( match.index ); //this WILL NOT be an empty string as it will contain a "\" at the least
+
     this.tokens[ loop.t_i+1 ].type = "string"; //Debugger will not track BRAND NEW strings until they have been checked first
     
     //Create token for the unknown string before the escape character, then track it, as it has already been processed
@@ -148,7 +149,10 @@ function stringToObj( RegExArg ){
         
         if( match[ 1 ].length != 0 )
         {
-          this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( match[ 1 ].length );
+          if( this.tokens[ loop.t_i ].regex.substring( match[ 1 ].length ).length > 0 ){
+            this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( match[ 1 ].length );
+            this.tokens[ loop.t_i+1 ].regex = "string";
+          }
           this.tokens[ loop.t_i ].regex = '\\' + match[ 1 ];
           this.tokens[ loop.t_i ].type = "escape::octan::len" + match[ 1 ].length;
         }
@@ -157,7 +161,10 @@ function stringToObj( RegExArg ){
         
         if( match[ 2 ].length != 0 )
         {
-          this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 4 );
+          if( this.tokens[ loop.t_i ].regex.substring( 4 ).length > 0 ){
+            this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 4 );
+            this.tokens[ loop.t_i+1 ].regex = "string";
+          }
           this.tokens[ loop.t_i ].regex = '\\' + match[ 2 ];
           this.tokens[ loop.t_i ].type = "escape::hexadecimal";
         }
@@ -166,7 +173,10 @@ function stringToObj( RegExArg ){
         
         if( match[ 3 ].length != 0 )
         {
-          this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 6 );
+          if( this.tokens[ loop.t_i ].regex.substring( 6 ).length > 0 ){
+            this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 6 );
+            this.tokens[ loop.t_i+1 ].regex = "string";
+          }
           this.tokens[ loop.t_i ].regex = '\\' + match[ 3 ];
           this.tokens[ loop.t_i ].type = "escape::unicode::ES5";
         }
@@ -175,7 +185,10 @@ function stringToObj( RegExArg ){
           
         if( match[ 4 ].length != 0 )
         {
-          this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 3 );
+          if( this.tokens[ loop.t_i ].regex.substring( 3 ).length > 0 ){
+            this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 3 );
+            this.tokens[ loop.t_i+1 ].regex = "string";
+          }
           this.tokens[ loop.t_i ].regex = '\\' + match[ 4 ];
           this.tokens[ loop.t_i ].type = "escape::control_character";
         }
@@ -184,7 +197,10 @@ function stringToObj( RegExArg ){
           
         if( match[ 5 ].length != 0 )
         {
-          this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 2 );
+          if( this.tokens[ loop.t_i ].regex.substring( 2 ).length > 0 ){
+            this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 2 );
+            this.tokens[ loop.t_i+1 ].regex = "string";
+          }
           this.tokens[ loop.t_i ].regex = '\\' + match[ 5 ];
           this.tokens[ loop.t_i ].type = "escape::reference";
         }
@@ -193,12 +209,14 @@ function stringToObj( RegExArg ){
       else //In the case that the first few characters in the following string are a REGULAR escape sequence
       
       {
-        this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 2 );
+        if( this.tokens[ loop.t_i ].regex.substring( 2 ).length > 0 ){
+          this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 2 );
+          this.tokens[ loop.t_i+1 ].regex = "string";
+        }
         this.tokens[ loop.t_i ].regex = this.tokens[ loop.t_i ].regex.substring( 0, 2 );
         this.tokens[ loop.t_i ].type = "escape";
       }
       
-      this.tokens[ loop.t_i+1 ].regex = "string";
       debug.string_tracker[] = loop.t_i; //tracking the just-now-checked string
       
       
