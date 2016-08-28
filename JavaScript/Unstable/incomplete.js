@@ -225,5 +225,7 @@ function stringToObj( RegExArg ){
     "isBroken" = false, //is true when the class token has been found to span over several existing tokens, instead of just one
     "broken_tokens" //array of all tokens except for the first unidentified string token that have had a class token detected parenting them
   }
+
+  //For loop goes here: <<<<<<<<<<<<PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
   
 } //the stringToObject function
