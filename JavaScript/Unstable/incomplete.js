@@ -22,7 +22,7 @@ function stringToObj( RegExArg ){
   //The inner value of the original argument is now the argument
   //This value is also all characters with indexes after the initial "/" up to the one where it equals the length of RegExArg without the initial "/" minus 1 (length to last index conversion) minus 1 (last "/") minus the length of the flag
   
-  if( ( match = /\/([A-Za-z])/ ) ){
+  if( ( match = ( new RegExp( "/\\/([A-Za-z])/" ) ).exec( RegExArg ) ){
     this.flags = match[ 1 ];
     RegExArg = RegExArg.substring( 0, ( RegExArg.length -2 -match[1].length ) )
   }
@@ -67,7 +67,7 @@ function stringToObj( RegExArg ){
     //Execute the loop
     
     loop.t_i < this.tokens.length &&
-      ( match = /\\/.exec( this.tokens[ loop.t_i ].regex ) ) != null;
+      ( match = ( new RegExp( "/\\\\/" ) ).exec( this.tokens[ loop.t_i ].regex ) ) != null;
     
     //Increment the first used token index after each loop
     
@@ -141,7 +141,7 @@ function stringToObj( RegExArg ){
       
       //Are the first few characters in following the escape character a SPECIAL escape sequence? (this is the actual check)
       
-      if( ( match = new RegExp( regex_string ).exec( this.tokens[ loop.t_i ].regex.substring( 1 ) ) ) != null )
+      if( ( match = ( new RegExp( regex_string ) ).exec( this.tokens[ loop.t_i ].regex.substring( 1 ) ) ) != null )
       {
           
         //Is the SPECIAL escape sequence an octal escape?
@@ -222,10 +222,41 @@ function stringToObj( RegExArg ){
 
   debug.track_sync = { //initiate what data the loop needs to know and keep for each loop
     "searchingFor" = "[", //what is currently being searched for
-    "isBroken" = false, //is true when the class token has been found to span over several existing tokens, instead of just one
-    "broken_tokens" //array of all tokens except for the first unidentified string token that have had a class token detected parenting them
   }
 
-  //For loop goes here: <<<<<<<<<<<<PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER PLACEHOLDER
+  for(
+
+    //reinitialize debug.string_tracker index to 0
+
+    loop.st_i = 0;
+
+    //if there are more unidentified string tokens to check, continue looping
+
+    loop.st_i < debug.string_tracker.length;
+
+    //after every loop increment the string_tracker index
+
+    loop.st_i++;
+
+  ){
+
+    //create regex with what we are searching for
+
+    var regex_string = "/\\" + debug.track_sync.searchingFor + "/";
+
+    while( ( match = ( new RegExp( regex_string ) ).exec( //reason for loop instead of if-condition is that regex_string is intended on changing if there are no tokens in between "[" and "]" and the following "["/"]" pairs
+      this.tokens[ 
+        debug.string_tracker[ loop.st_i ]
+      ].regex.substring( 1 ) 
+    ) ) != null ){ 
+
+      //splice tokens here into 3 groups:
+        //before-slice (old) tokens
+        //at-slice (new) token < this token will be the one worked on
+        //after-slice (old) tokens
+      //then rejoin them
+
+    }
+  }
   
 } //the stringToObject function
