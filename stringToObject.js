@@ -43,10 +43,7 @@ function stringToObj( RegExArg ){
     ];
   var debug = {
       "group_depth" : 0, //Used for tracking nested groups and classes
-      "string_tracker" : { //Used for tracking UNIDENTIFIED strings. Main and Mini alternate between indeces 0 and 1 respectively
-        "first" : [ 0 ], 
-        "second" : [ 0 ]
-      },
+      "string_tracker" : [], //Used for tracking UNIDENTIFIED strings. Main and Mini alternate between indeces 0 and 1 respectively
       "track_sync" //Used for variables that are associated with string tracker (used for looping when string_tracker is being looped over; holds data continuously regardless of the string_tracker loop)
     },
     loop = {
@@ -89,7 +86,7 @@ function stringToObj( RegExArg ){
     
     this.tokens[ loop.t_i.first ].regex = this.tokens[ loop.t_i.first ].regex.substring( 0, match.index );
     this.tokens[ loop.t_i.first ].type = "string";
-    debug.string_tracker.first[] = loop.t_i.first; //tracking the already-checked string
+    debug.string_tracker[] = loop.t_i.first; //tracking the already-checked string
     
     //increase tokens index by 1 to start searching the unknown and BRAND NEW string for escape SEQUENCES at the beginning, because that is where the escape character "\" is found
     
@@ -205,7 +202,7 @@ function stringToObj( RegExArg ){
       }
       
       this.tokens[ loop.t_i.first+1 ].regex = "string";
-      debug.string_tracker.first[] = loop.t_i.first; //tracking the just-now-checked string
+      debug.string_tracker[] = loop.t_i.first; //tracking the just-now-checked string
       
       
     } //original loop
