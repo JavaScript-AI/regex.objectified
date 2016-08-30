@@ -48,10 +48,7 @@ function stringToObj( RegExArg ){
     },
     loop = {
       "t_i" :, //token index. Main and Mini alternate between indeces 0 and 1 respectively
-      "st_i" : { //string_tracker index. Main and Mini alternate between indeces 0 and 1 respectively
-        "first" : 0,
-        "second" : 0
-      },
+      "st_i" : 0, //string_tracker index. Main and Mini alternate between indeces 0 and 1 respectively
       "r_i" : 0 //used for creating regex strings for searching
     };
 
@@ -242,7 +239,7 @@ function stringToObj( RegExArg ){
     "searchingFor" = "[", //what is currently being searched for
   }
 
-  for(
+  for( // class detector loop. loops over tokens (tracked ones) to find character classes in the string(s) and convert them over to class objects (tokens)
 
     //reinitialize debug.string_tracker index to 0
 
@@ -258,68 +255,61 @@ function stringToObj( RegExArg ){
 
   ){
 
-    //create regex with what we are searching for
+    //create regex with what we are searching for, then match for it in the current token
 
     var regex_string = "/\\" + debug.track_sync.searchingFor + "/";
 
-    //reason for loop instead of if-condition is that regex_string is intended on changing if there are no tokens in between "[" and "]" and the following "["/"]" pairs and
-    //this loop will be used for splicing the tokens array
+    //assign the match, and if it exists, check the token, else continue looping
+    //if it does exist and "]" exists in the same string check for new ones (loop over code check-handling again)
 
-    while( ( match = ( new RegExp( regex_string ) ).exec(
-      this.tokens[ 
-        debug.string_tracker[ loop.st_i ]
-      ].regex.substring( 1 ) 
-    ) ) != null ){ 
+    if( ( match = ( new RegExp( regex_string ) ).exec( this.tokens[ debug.string_tacker[ loop.st_i ] ].regex ) ) != null ) //this will not loop over!!!
+    {
 
-      //splice tokens here into 3 groups:
-        //before-slice (old) tokens
-        //at-slice (new) token < this token will be the one worked on
-        //after-slice (old) tokens
-      //then rejoin them
+      //create new token, but do not attach it yet, as it is currently incomplete.
 
-
-      //THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
-
-      //THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
-      //THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
-      //THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
-      //THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
-      //THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
-      //THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
-      //THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
-      //THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
-
-      //THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
-
-      debug.track_sync.pre_elem = {
-        "regex" : ,
-        "type" : "string"
-      };
-
-      debug.track_sync.new_elem = {
-        "regex" : "",
-        "type" : "class",
+      debug.track_sync.class_token = {
+        "regex": "[",
+        "type": "class",
         "tokens" : []
-      };
+      }
 
-      //pre-slice processing
-      this.tokens.splice( debug.string_tracker[ loop.st_i ], 0,  )
+      debug.track_sync.onTerm = {
+        "token_index" : debug.string_tracker[ loop.st_i ] //index of token in token array FOUND-IN (where "[" was found in)
+        "match_index" : match.index //index of "[" in token FOUND-AT
+      }
 
-      //^^^^^^^^^^^^^(up above)^^^^^^^^^^^^^^^^^^^^^ - THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
+      debug.track_sync.searchingFor = "]"
 
-      //THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
-      //THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
-      //THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
-      //THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
-      //THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
-      //THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
-      //THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
-      //THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
+      regex_string = "/\\" + debug.track_sync.searchingFor + "/";
 
-      //THIS NEEDS MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK MORE WORK
-      
-    } //token-splicing loop
+      if( ( match = ( new RegExp( regex_string ) ).exec( this.tokens[ debug.string_tacker[ loop.st_i ] ].regex ) ) != null ){
 
-  } //character-class-detecting loop
+        //assign the regex to all characters between, but including the "[" (debug.track_sync.onTerm.match_index) and the "]" (match.index)
+        debug.track_sync.class_token.regex = this.tokens[ debug.string_tacker[ loop.st_i ] ].regex.substring( debug.track_sync.onTerm.match_index, match.index + 1 );
+
+        //starting at the token with 1 index higher than the tracked string in which the "[" was found, delete 0 tokens, and insert before the newly created class token, then the post-slice token
+        this.tokens.splice( debug.track_sync.onTerm.token_index + 1, 0, debug.track_sync.class_token, {
+          "regex" : this.tokens[ debug.track_sync.onTerm.token_index ].regex.substring( match.index + 1 ), //make the regex of the post-slice token that of an unidentified string token with the post-slice string
+          "type" : "string" //assign it to a string type
+        }); //at-slice & post-slice handling
+
+        //track the post-slice
+        if( debug.string_tracker.length > loop.st_i + 1) //check to see if string_tracker index is at the end, and needs a new tracker created on the end, or otherwise a new tracker inserted after the currently being used tracker
+        {
+          debug.string_tracker.splice( loop.st_i + 1, 0, debug.track_sync.onTerm.token_index + 2 );
+        }else{
+          debug.string_tracker[] = debug.track_sync.onTerm.token_index + 2;
+        }
+
+        //replace the regex in the token where the "[" was found at with all the string data before it
+        this.tokens[ debug.track_sync.onTerm.token_index ].regex = this.tokens[ debug.string_tacker[ loop.st_i ] ].regex.substring( 0, debug.track_sync.onTerm.match_index )
+
+      }
+
+    } //handler for "["
+
+    //needs handling/handler for "]"
+
+  } //character-class-detecting loop + token-splcer
   
 } //the stringToObject function
