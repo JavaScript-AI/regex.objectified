@@ -189,7 +189,12 @@ function stringToObj( RegExArg ){
             {
               this.tokens[ loop.dt_i+1 ].regex = this.tokens[ loop.dt_i ].regex.substring( match[ 1 ].length /*-1 (to get final index) +1 (to make final index non-inclusive)*/ +1 /*include the length of the "\"*/ );
               this.tokens[ loop.dt_i+1 ].type = "string::unidentified";
-            }
+
+              //increase THE TOKENS ARRAY INDEX STORED **WITHIN** the string tracker array
+
+              loop.dt_i = debug.string_tracker[ loop.st_i ] = loop.dt_i + 1;
+
+            } //PREVENTIVE CHECK DESIGN (issue #26)
 
             //cut and modify CURRENTLY-BEING-CHECKED token to be the SPECIAL ESCAPE sequence
 
@@ -210,126 +215,139 @@ function stringToObj( RegExArg ){
             {
               this.tokens[ loop.dt_i+1 ].regex = this.tokens[ loop.dt_i ].regex.substring( 4 /*explanation is in "if" statement*/ );
               this.tokens[ loop.dt_i+1 ].type = "string::unidentified";
-            }
+
+              //increase THE TOKENS ARRAY INDEX STORED **WITHIN** the string tracker array
+
+              loop.dt_i = debug.string_tracker[ loop.st_i ] = loop.dt_i + 1;
+
+            } //PREVENTIVE CHECK DESIGN (issue #26)
 
             //cut and modify CURRENTLY-BEING-CHECKED token to be the SPECIAL ESCAPE sequence
 
             this.tokens[ loop.dt_i ].regex = "\\" + match[ 2 ];
             this.tokens[ loop.dt_i ].type = "escape::hexadecimal";
 
-          }
+          } //HEXADECIMAL ESCAPE
 
-          //AT THIS POINT>>>
+          //is the SPECIAL ESCAPE sequence an ES3-ES5 UNICODE ESCAPE?
 
-          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
-          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
-          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
-          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
-          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
-          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
-          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
-          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
-          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
-          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
-          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
-          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
-          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
-          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
-          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
-          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
-          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
+          if( match[ 3 ].length != 0 )
+          {
 
-          //<<<AT THIS POINT<<<
+            //PREVENTIVE CHECK for NO EMPTY TOKENS creation (if the string after the match is empty, do not create a token for it)
+            //creates unidentified string tokens for the string following the SPECIAL ESCAPE SEQUENCE, if PREVENTIVE CHECK passes
 
-        }
+            if( this.tokens[ loop.dt_i ].regex.substring( 5 /*-1 (to get final index) +1 (to make final index non-inclusive)*/ +1 /*include the length of the "\"*/ ).length > 0 )
+            {
+              this.tokens[ loop.dt_i+1 ].regex = this.tokens[ loop.dt_i ].regex.substring( 6 /*explanation is in "if" statement*/ );
+              this.tokens[ loop.dt_i+1 ].type = "string::unidentified";
 
-      }
+              //increase THE TOKENS ARRAY INDEX STORED **WITHIN** the string tracker array
+
+              loop.dt_i = debug.string_tracker[ loop.st_i ] = loop.dt_i + 1;
+
+            } //PREVENTIVE CHECK DESIGN (issue #26)
+
+            //cut and modify CURRENTLY-BEING-CHECKED token to be the SPECIAL ESCAPE sequence
+
+            this.tokens[ loop.dt_i ].regex = "\\" + match[ 3 ];
+            this.tokens[ loop.dt_i ].type = "escape::unicode::ES3";
+
+          } //ES3 UNICODE ESCAPE
+
+          //is the SPECIAL ESCAPE sequence a CONTROL CHARACTER ESCAPE?
+
+          if( match[ 4 ].length != 0 )
+          {
+
+            //PREVENTIVE CHECK for NO EMPTY TOKENS creation (if the string after the match is empty, do not create a token for it)
+            //creates unidentified string tokens for the string following the SPECIAL ESCAPE SEQUENCE, if PREVENTIVE CHECK passes
+
+            if( this.tokens[ loop.dt_i ].regex.substring( 2 /*-1 (to get final index) +1 (to make final index non-inclusive)*/ +1 /*include the length of the "\"*/ ).length > 0 )
+            {
+              this.tokens[ loop.dt_i+1 ].regex = this.tokens[ loop.dt_i ].regex.substring( 3 /*explanation is in "if" statement*/ );
+              this.tokens[ loop.dt_i+1 ].type = "string::unidentified";
+
+              //increase THE TOKENS ARRAY INDEX STORED **WITHIN** the string tracker array
+
+              loop.dt_i = debug.string_tracker[ loop.st_i ] = loop.dt_i + 1;
+
+            } //PREVENTIVE CHECK DESIGN (issue #26)
+
+            //cut and modify CURRENTLY-BEING-CHECKED token to be the SPECIAL ESCAPE sequence
+
+            this.tokens[ loop.dt_i ].regex = "\\" + match[ 4 ];
+            this.tokens[ loop.dt_i ].type = "escape::control_character";
+
+          } //CONTROL CHARACTER ESCAPE
+          
+          //is the SPECIAL ESCPAE sequence NOT even an escape sequence, but a BACK REFERENCE?
+
+          if( match[ 5 ].length != 0 )
+          {
+
+            //PREVENTIVE CHECK for NO EMPTY TOKENS creation (if the string after the match is empty, do not create a token for it)
+            //creates unidentified string tokens for the string following the SPECIAL ESCAPE SEQUENCE, if PREVENTIVE CHECK passes
+
+            if( this.tokens[ loop.dt_i ].regex.substring( 1 /*-1 (to get final index) +1 (to make final index non-inclusive)*/ +1 /*include the length of the "\"*/ ).length > 0 )
+            {
+              this.tokens[ loop.dt_i+1 ].regex = this.tokens[ loop.dt_i ].regex.substring( 2 /*explanation is in "if" statement*/ );
+              this.tokens[ loop.dt_i+1 ].type = "string::unidentified";
+
+              //increase THE TOKENS ARRAY INDEX STORED **WITHIN** the string tracker array
+
+              loop.dt_i = debug.string_tracker[ loop.st_i ] = loop.dt_i + 1;
+
+            } //PREVENTIVE CHECK DESIGN (issue #26)
+
+            //cut and modify CURRENTLY-BEING-CHECKED token to be the SPECIAL ESCAPE sequence
+
+            this.tokens[ loop.dt_i ].regex = "\\" + match[ 5 ];
+            this.tokens[ loop.dt_i ].type = "escape::reference";
+
+          } //BACK REFERENCE
+
+        } //SPECIAL ESCAPES DETECTOR
+
+        else //In the case that the first few characters in the following string are a REGULAR escape sequence
+
+        {
+
+          //PREVENTIVE CHECK for NO EMPTY TOKENS creation (if the string after the match is empty, do not create a token for it)
+          //creates unidentified string tokens for the string following the REGULAR ESCAPE SEQUENCE, if PREVENTIVE CHECK passes
+
+          if( this.tokens[ loop.dt_i ].regex.substring( 2 /*uses same logic as BACK REFERENCE ^^^*/ ).length > 0 )
+          {
+            this.tokens[ loop.dt_i+1 ].regex = this.tokens[ loop.dt_i ].regex.substring( 2 /*uses same logic as BACK REFERENCE ^^^*/ );
+            this.tokens[ loop.dt_i+1 ].type = "string::unidentified";
+
+            //increase THE TOKENS ARRAY INDEX STORED **WITHIN** the string tracker array
+
+            loop.dt_i = debug.string_tracker[ loop.st_i ] = loop.dt_i + 1;
+
+          } //PREVENTIVE CHECK DESIGN (issue #26)
+
+          //cut and modify CURRENTLY-BEING-CHECKED token to be the REGULAR ESCAPE sequence
+
+          this.tokens[ loop.dt_i ].regex = this.tokens[ loop.dt_i ].regex.substring( 0, 2 /*there is no match for the REGULAR ESCAPE sequence, so we use this alternative for creating the regex portion*/ );
+          this.tokens[ loop.dt_i ].type = "escape;
+
+        } //REGULAR ESCPAPES DETECTOR (which is really the SPECIAL ESCAPE DETECTOR's "else" statement)
+
+      } //CHECK FOR ANY FOLLOWING STRING
 
       else //in the case that there are no characters following the "\"
 
-      {}
+      {
+
+        this.tokens[ loop.dt_i ].regex = "\\";
+        this.tokens[ loop.dt_i ].type = "string::bad::escape";
+
+      } //CHECK FOR ANY FOLLOWING STRING ("else" statement)
 
     } // ESCAPE DETECTOR loop
 
   } //TOKEN CYCLER loop
-      
-        
-        //Is the SPECIAL escape sequence a hexadecimal escape?
-        
-        if( match[ 2 ].length != 0 )
-        {
-          if( this.tokens[ loop.t_i ].regex.substring( 4 ).length > 0 ){
-            this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 4 );
-            this.tokens[ loop.t_i+1 ].regex = "string";
-          }
-          this.tokens[ loop.t_i ].regex = '\\' + match[ 2 ];
-          this.tokens[ loop.t_i ].type = "escape::hexadecimal";
-        }
-        
-        //Is the SPECIAL escape sequence an ES5 unicode escape?
-        
-        if( match[ 3 ].length != 0 )
-        {
-          if( this.tokens[ loop.t_i ].regex.substring( 6 ).length > 0 ){
-            this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 6 );
-            this.tokens[ loop.t_i+1 ].regex = "string";
-          }
-          this.tokens[ loop.t_i ].regex = '\\' + match[ 3 ];
-          this.tokens[ loop.t_i ].type = "escape::unicode::ES5";
-        }
-          
-        //Is the SPECIAL escape sequence a control character escape?
-          
-        if( match[ 4 ].length != 0 )
-        {
-          if( this.tokens[ loop.t_i ].regex.substring( 3 ).length > 0 ){
-            this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 3 );
-            this.tokens[ loop.t_i+1 ].regex = "string";
-          }
-          this.tokens[ loop.t_i ].regex = '\\' + match[ 4 ];
-          this.tokens[ loop.t_i ].type = "escape::control_character";
-        }
-          
-        //Is the SPECIAL escape sequence NOT even an escape sequence, but a BACK REFERENCE?
-          
-        if( match[ 5 ].length != 0 )
-        {
-          if( this.tokens[ loop.t_i ].regex.substring( 2 ).length > 0 ){
-            this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 2 );
-            this.tokens[ loop.t_i+1 ].regex = "string";
-          }
-          this.tokens[ loop.t_i ].regex = '\\' + match[ 5 ];
-          this.tokens[ loop.t_i ].type = "escape::reference";
-        }
-      }
-      
-      else //In the case that the first few characters in the following string are a REGULAR escape sequence
-      
-      {
-        if( this.tokens[ loop.t_i ].regex.substring( 2 ).length > 0 ){
-          this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 2 );
-          this.tokens[ loop.t_i+1 ].regex = "string";
-        }
-        this.tokens[ loop.t_i ].regex = this.tokens[ loop.t_i ].regex.substring( 0, 2 );
-        this.tokens[ loop.t_i ].type = "escape";
-      }
-      
-      debug.string_tracker[] = loop.t_i; //tracking the just-now-checked string
-      
-      
-    } //original loop
-    
-    else //In the case that there is no string following "\"
-    
-    {
-      this.tokens[ loop.t_i ].regex = '\\';
-      this.tokens[ loop.t_i ].type = 'string';
-      
-      //this string does not need further tracking as it is identified as a non-escape escape char "\";
-      
-    } //check for SPECIAL ESCAPES, REGULAR ESCAPES, and Non-escape "\" strings
-    
-  } //the escape-char-seq-detecting loop
 
   //NOW we do character class detection
 
