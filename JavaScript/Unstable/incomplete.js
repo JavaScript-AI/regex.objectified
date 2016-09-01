@@ -1,6 +1,11 @@
 //Directly convert String to Object
 
 function stringToObj( RegExArg ){
+<<<<<<< HEAD
+=======
+
+  //NOW we initialize the process and the object
+>>>>>>> 0.2.0-a
   
   //Argument must start with "/", but we don't want it as it isn't useful
   
@@ -20,7 +25,11 @@ function stringToObj( RegExArg ){
   //The inner value of the original argument is now the argument
   //This value is also all characters with indexes after the initial "/" up to the one where it equals the length of RegExArg without the initial "/" minus 1 (length to last index conversion) minus 1 (last "/") minus the length of the flag
   
+<<<<<<< HEAD
   if( ( match = /\/([A-Za-z])/ ) ){
+=======
+  if( ( match = ( new RegExp( "/\\/([A-Za-z])/" ) ).exec( RegExArg ) ){
+>>>>>>> 0.2.0-a
     this.flags = match[ 1 ];
     RegExArg = RegExArg.substring( 0, ( RegExArg.length -2 -match[1].length ) )
   }
@@ -41,6 +50,7 @@ function stringToObj( RegExArg ){
     ];
   var debug = {
       "group_depth" : 0, //Used for tracking nested groups and classes
+<<<<<<< HEAD
       "string_tracker" : { //Used for tracking UNIDENTIFIED strings. Main and Mini alternate between indeces 0 and 1 respectively
         "first" : [ 0 ], 
         "second" : [ 0 ]
@@ -57,26 +67,52 @@ function stringToObj( RegExArg ){
       },
       "r_i" : 0 //used for creating regex strings for searching
     };
+=======
+      "string_tracker" : [], //Used for tracking UNIDENTIFIED strings. Main and Mini alternate between indeces 0 and 1 respectively
+      "track_sync" //Used for variables that are associated with string tracker (used for looping when string_tracker is being looped over; holds data continuously regardless of the string_tracker loop)
+    },
+    loop = {
+      "t_i" :, //token index. Main and Mini alternate between indeces 0 and 1 respectively
+      "st_i" : 0, //string_tracker index. Main and Mini alternate between indeces 0 and 1 respectively
+      "r_i" : 0 //used for creating regex strings for searching
+    };
+
+  //NOW we do escape sequence/character detection
+>>>>>>> 0.2.0-a
   
   for(
     
     //Reinitialize The first used token index
     
+<<<<<<< HEAD
     loop.t_i.first = 0;
+=======
+    loop.t_i = 0;
+>>>>>>> 0.2.0-a
     
     //If the token index is less than the length of tokens, and there is an escape sequence ("\") within the currently checked token's regex
     //Execute the loop
     
+<<<<<<< HEAD
     loop.t_i.first < this.tokens.length &&
       ( match = /\\/.exec( this.tokens[ loop.t_i.first ].regex ) ) != null;
     
     //Increment the first used token index after each loop
     
     loop.t_i.first++
+=======
+    loop.t_i < this.tokens.length &&
+      ( match = ( new RegExp( "/\\\\/" ) ).exec( this.tokens[ loop.t_i ].regex ) ) != null;
+    
+    //Increment the first used token index after each loop
+    
+    loop.t_i++
+>>>>>>> 0.2.0-a
   ){
     
     //If the loop condition passes, create a new token and assign it to the substring that starts with the first instance of "\"
     
+<<<<<<< HEAD
     this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( match.index );
     this.tokens[ loop.t_i.first+1 ].type = "string"; //Debugger will not track BRAND NEW strings until they have been checked first
     
@@ -89,11 +125,30 @@ function stringToObj( RegExArg ){
     //increase tokens index by 1 to start searching the unknown and BRAND NEW string for escape SEQUENCES at the beginning, because that is where the escape character "\" is found
     
     loop.t_i.first++;
+=======
+    this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( match.index ); //this WILL NOT be an empty string as it will contain a "\" at the least
+
+    this.tokens[ loop.t_i+1 ].type = "string"; //Debugger will not track BRAND NEW strings until they have been checked first
+    
+    //Create token for the unknown string before the escape character, then track it, as it has already been processed
+    
+    this.tokens[ loop.t_i ].regex = this.tokens[ loop.t_i ].regex.substring( 0, match.index );
+    this.tokens[ loop.t_i ].type = "string";
+    debug.string_tracker[] = loop.t_i; //tracking the already-checked string
+    
+    //increase tokens index by 1 to start searching the unknown and BRAND NEW string for escape SEQUENCES at the beginning, because that is where the escape character "\" is found
+    
+    loop.t_i++;
+>>>>>>> 0.2.0-a
     
     //Does the string following the matching "\" (the remainder of the string following the first character ([0])) from the match way up above have a length that is greater than 0?
     //i.e. Does the string following the matching "\" have a length greater than 0?
     
+<<<<<<< HEAD
     if( this.tokens[ loop.t_i.first ].regex.substring( 1 ).length > 0 )
+=======
+    if( this.tokens[ loop.t_i ].regex.substring( 1 ).length > 0 )
+>>>>>>> 0.2.0-a
     {
       
       //Are the first few characters in the following string a SPECIAL escape sequence? (this is the start for the prep of this question, continue downwards for the check itself)
@@ -142,58 +197,108 @@ function stringToObj( RegExArg ){
       
       //Are the first few characters in following the escape character a SPECIAL escape sequence? (this is the actual check)
       
+<<<<<<< HEAD
       if( ( match = new RegExp( regex_string ).exec( this.tokens[ loop.t_i.first ].regex.substring( 1 ) ) ) != null )
+=======
+      if( ( match = ( new RegExp( regex_string ) ).exec( this.tokens[ loop.t_i ].regex.substring( 1 ) ) ) != null )
+>>>>>>> 0.2.0-a
       {
           
         //Is the SPECIAL escape sequence an octal escape?
         
         if( match[ 1 ].length != 0 )
         {
+<<<<<<< HEAD
           this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( match[ 1 ].length );
           this.tokens[ loop.t_i.first ].regex = '\\' + match[ 1 ];
           this.tokens[ loop.t_i.first ].type = "escape::octan::len" + match[ 1 ].length;
+=======
+          if( this.tokens[ loop.t_i ].regex.substring( match[ 1 ].length ).length > 0 ){
+            this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( match[ 1 ].length );
+            this.tokens[ loop.t_i+1 ].regex = "string";
+          }
+          this.tokens[ loop.t_i ].regex = '\\' + match[ 1 ];
+          this.tokens[ loop.t_i ].type = "escape::octan::len" + match[ 1 ].length;
+>>>>>>> 0.2.0-a
         }
         
         //Is the SPECIAL escape sequence a hexadecimal escape?
         
         if( match[ 2 ].length != 0 )
         {
+<<<<<<< HEAD
           this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 4 );
           this.tokens[ loop.t_i.first ].regex = '\\' + match[ 2 ];
           this.tokens[ loop.t_i.first ].type = "escape::hexadecimal";
+=======
+          if( this.tokens[ loop.t_i ].regex.substring( 4 ).length > 0 ){
+            this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 4 );
+            this.tokens[ loop.t_i+1 ].regex = "string";
+          }
+          this.tokens[ loop.t_i ].regex = '\\' + match[ 2 ];
+          this.tokens[ loop.t_i ].type = "escape::hexadecimal";
+>>>>>>> 0.2.0-a
         }
         
         //Is the SPECIAL escape sequence an ES5 unicode escape?
         
         if( match[ 3 ].length != 0 )
         {
+<<<<<<< HEAD
           this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 6 );
           this.tokens[ loop.t_i.first ].regex = '\\' + match[ 3 ];
           this.tokens[ loop.t_i.first ].type = "escape::unicode::ES5";
+=======
+          if( this.tokens[ loop.t_i ].regex.substring( 6 ).length > 0 ){
+            this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 6 );
+            this.tokens[ loop.t_i+1 ].regex = "string";
+          }
+          this.tokens[ loop.t_i ].regex = '\\' + match[ 3 ];
+          this.tokens[ loop.t_i ].type = "escape::unicode::ES5";
+>>>>>>> 0.2.0-a
         }
           
         //Is the SPECIAL escape sequence a control character escape?
           
         if( match[ 4 ].length != 0 )
         {
+<<<<<<< HEAD
           this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 3 );
           this.tokens[ loop.t_i.first ].regex = '\\' + match[ 4 ];
           this.tokens[ loop.t_i.first ].type = "escape::control_character";
+=======
+          if( this.tokens[ loop.t_i ].regex.substring( 3 ).length > 0 ){
+            this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 3 );
+            this.tokens[ loop.t_i+1 ].regex = "string";
+          }
+          this.tokens[ loop.t_i ].regex = '\\' + match[ 4 ];
+          this.tokens[ loop.t_i ].type = "escape::control_character";
+>>>>>>> 0.2.0-a
         }
           
         //Is the SPECIAL escape sequence NOT even an escape sequence, but a BACK REFERENCE?
           
         if( match[ 5 ].length != 0 )
         {
+<<<<<<< HEAD
           this.tokens[ loop.t_i.first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 2 );
           this.tokens[ loop.t_i.first ].regex = '\\' + match[ 5 ];
           this.tokens[ loop.t_i.first ].type = "escape::reference";
+=======
+          if( this.tokens[ loop.t_i ].regex.substring( 2 ).length > 0 ){
+            this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 2 );
+            this.tokens[ loop.t_i+1 ].regex = "string";
+          }
+          this.tokens[ loop.t_i ].regex = '\\' + match[ 5 ];
+          this.tokens[ loop.t_i ].type = "escape::reference";
+>>>>>>> 0.2.0-a
         }
       }
       
       else //In the case that the first few characters in the following string are a REGULAR escape sequence
       
       {
+<<<<<<< HEAD
         this.tokens[ loop.t_i,first+1 ].regex = this.tokens[ loop.t_i.first ].regex.substring( 2 );
         this.tokens[ loop.t_i.first ].regex = this.tokens[ loop.t_i.first ].regex.substring( 0, 2 );
         this.tokens[ loop.t_i.first ].type = "escape";
@@ -201,6 +306,17 @@ function stringToObj( RegExArg ){
       
       this.tokens[ loop.t_i.first+1 ].regex = "string";
       debug.string_tracker.first[] = loop.t_i.first; //tracking the just-now-checked string
+=======
+        if( this.tokens[ loop.t_i ].regex.substring( 2 ).length > 0 ){
+          this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( 2 );
+          this.tokens[ loop.t_i+1 ].regex = "string";
+        }
+        this.tokens[ loop.t_i ].regex = this.tokens[ loop.t_i ].regex.substring( 0, 2 );
+        this.tokens[ loop.t_i ].type = "escape";
+      }
+      
+      debug.string_tracker[] = loop.t_i; //tracking the just-now-checked string
+>>>>>>> 0.2.0-a
       
       
     } //original loop
@@ -208,13 +324,103 @@ function stringToObj( RegExArg ){
     else //In the case that there is no string following "\"
     
     {
+<<<<<<< HEAD
       this.tokens[ loop.t_i.first ].regex = '\\';
       this.tokens[ loop.t_i.first ].type = 'string';
+=======
+      this.tokens[ loop.t_i ].regex = '\\';
+      this.tokens[ loop.t_i ].type = 'string';
+>>>>>>> 0.2.0-a
       
       //this string does not need further tracking as it is identified as a non-escape escape char "\";
       
     } //check for SPECIAL ESCAPES, REGULAR ESCAPES, and Non-escape "\" strings
     
+<<<<<<< HEAD
   } //the escape-finding loop 
+=======
+  } //the escape-char-seq-detecting loop
+
+  //NOW we do character class detection
+
+  //the detection process will search each unidentified string token ONCE for bits and pieces of character classes and group them together into an class-token
+
+  debug.track_sync = { //initiate what data the loop needs to know and keep for each loop
+    "searchingFor" = "[", //what is currently being searched for
+  }
+
+  for( // class detector loop. loops over tokens (tracked ones) to find character classes in the string(s) and convert them over to class objects (tokens)
+
+    //reinitialize debug.string_tracker index to 0
+
+    loop.st_i = 0;
+
+    //if there are more unidentified string tokens to check, continue looping
+
+    loop.st_i < debug.string_tracker.length;
+
+    //after every loop increment the string_tracker index
+
+    loop.st_i++;
+
+  ){
+
+    //create regex with what we are searching for, then match for it in the current token
+
+    var regex_string = "/\\" + debug.track_sync.searchingFor + "/";
+
+    //assign the match, and if it exists, check the token, else continue looping
+    //if it does exist and "]" exists in the same string check for new ones (loop over code check-handling again)
+
+    if( ( match = ( new RegExp( regex_string ) ).exec( this.tokens[ debug.string_tacker[ loop.st_i ] ].regex ) ) != null ) //this will not loop over!!!
+    {
+
+      //create new token, but do not attach it yet, as it is currently incomplete.
+
+      debug.track_sync.class_token = {
+        "regex": "[",
+        "type": "class",
+        "tokens" : []
+      }
+
+      debug.track_sync.onTerm = {
+        "token_index" : debug.string_tracker[ loop.st_i ] //index of token in token array FOUND-IN (where "[" was found in)
+        "match_index" : match.index //index of "[" in token FOUND-AT
+      }
+
+      debug.track_sync.searchingFor = "]"
+
+      regex_string = "/\\" + debug.track_sync.searchingFor + "/";
+
+      if( ( match = ( new RegExp( regex_string ) ).exec( this.tokens[ debug.string_tacker[ loop.st_i ] ].regex ) ) != null ){
+
+        //assign the regex to all characters between, but including the "[" (debug.track_sync.onTerm.match_index) and the "]" (match.index)
+        debug.track_sync.class_token.regex = this.tokens[ debug.string_tacker[ loop.st_i ] ].regex.substring( debug.track_sync.onTerm.match_index, match.index + 1 );
+
+        //starting at the token with 1 index higher than the tracked string in which the "[" was found, delete 0 tokens, and insert before the newly created class token, then the post-slice token
+        this.tokens.splice( debug.track_sync.onTerm.token_index + 1, 0, debug.track_sync.class_token, {
+          "regex" : this.tokens[ debug.track_sync.onTerm.token_index ].regex.substring( match.index + 1 ), //make the regex of the post-slice token that of an unidentified string token with the post-slice string
+          "type" : "string" //assign it to a string type
+        }); //at-slice & post-slice handling
+
+        //track the post-slice
+        if( debug.string_tracker.length > loop.st_i + 1) //check to see if string_tracker index is at the end, and needs a new tracker created on the end, or otherwise a new tracker inserted after the currently being used tracker
+        {
+          debug.string_tracker.splice( loop.st_i + 1, 0, debug.track_sync.onTerm.token_index + 2 );
+        }else{
+          debug.string_tracker[] = debug.track_sync.onTerm.token_index + 2;
+        }
+
+        //replace the regex in the token where the "[" was found at with all the string data before it
+        this.tokens[ debug.track_sync.onTerm.token_index ].regex = this.tokens[ debug.string_tacker[ loop.st_i ] ].regex.substring( 0, debug.track_sync.onTerm.match_index )
+
+      }
+
+    } //handler for "["
+
+    //needs handling/handler for "]"
+
+  } //character-class-detecting loop + token-splcer
+>>>>>>> 0.2.0-a
   
 } //the stringToObject function
