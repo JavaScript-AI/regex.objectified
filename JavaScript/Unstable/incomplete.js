@@ -2,6 +2,8 @@
 
 function stringToObj( RegExArg ){
 
+  var regex_string; //used for creating RegExp objects dynamically
+
   //NOW we initialize the process and the object
   
   //Argument must start with "/", but we don't want it as it isn't useful
@@ -93,7 +95,7 @@ function stringToObj( RegExArg ){
 
     ){
 
-      //if match the match is at NOT at the beginning (match.index !== 0) of the string, make the first token be all the junk before the "\", and create a new token that will be a MIXED TOKEN (ESCAPE/UNIDENTIFIED STRING)
+      //if match the match is NOT at the beginning (match.index !== 0) of the string, make the first token be all the junk before the "\", and create a new token that will be a MIXED TOKEN (ESCAPE/UNIDENTIFIED STRING)
 
       if( match.index !== 0 )
       {
@@ -111,114 +113,146 @@ function stringToObj( RegExArg ){
         this.tokens[ loop.dt_i ].regex = this.tokens[ loop.dt_i ].regex.substring( 0, match.index );
         this.tokens[ loop.dt_i ].type = "string::unidentified";
 
+        //increase THE TOKENS ARRAY INDEX STORED **WITHIN** the string tracker array
+
+        loop.dt_i = debug.string_tracker[ loop.st_i ] = loop.dt_i + 1;
+
+        //it is important to note that this WILL NOT CREATE AN EMPTY STRING TOKEN for the MIXED TOKEN, because the loop condition will not pass if the match is an empty string
+
+      }else{
+
+        //there is no this.tokens[].regex statement, because this.tokens[ loop.dt_i ].regex = this.tokens[ loop.dt_i ].regex.substring( 0 ) would be a self assigment
+
+        //assign the CURRENTLY EXISTING TOKEN, WHICH DOES NOT REQUIRE CHANGE in the regex property, the MIXED TOKEN class
+
+        this.tokens[ loop.dt_i ].type = "string::mixed";
+
       }
 
-      //it is important to note that this WILL NOT CREATE AN EMPTY STRING TOKEN for the MIXED TOKEN, because the loop condition will not pass if the match is an empty string
-    }
+      //The following section is for detecting whether the following characters (after the "\" taken from the match) form a string with a length greater than 0 (the following string is not an empty string)?
+      //The tokens beginning (due to the above if/else script) now is at the place where the MATCH starts
 
-  }
+      if( this.tokens[ loop.t_i ].regex.substring( 1 ).length > 0 ){
 
-  //NOW we do escape sequence/character detection
+        //the following is a preparatory script for a detector that checks for special escape sequences
+        //the following array contains those sequences (in regex)
 
-  for(
-    
-    //Reinitialize The first used token index
-    
-    loop.t_i = 0;
-    
-    //If the token index is less than the length of tokens, and there is an escape sequence ("\") within the currently checked token's regex
-    //Execute the loop
-    
-    loop.t_i < this.tokens.length &&
-      ( match = ( new RegExp( "/\\\\/" ) ).exec( this.tokens[ loop.t_i ].regex ) ) != null;
-    
-    //Increment the first used token index after each loop
-    
-    loop.t_i++
-  ){
-    
-    //If the loop condition passes, create a new token and assign it to the substring that starts with the first instance of "\"
-    
-    this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( match.index ); //this WILL NOT be an empty string as it will contain a "\" at the least
+        var escapes = [
+            "^(\\d\\d\\d?)", //Octal
+            "^(x[A-Fa-f0-9]{2})", //Hexadecimal
+            "^(u[A-Fa-f0-9]{4})", //Unicode
+            "^(c[A-Za-z])", //Control Character
+            "^([1-9])" //Back Reference
+          ];
 
-    this.tokens[ loop.t_i+1 ].type = "string"; //Debugger will not track BRAND NEW strings until they have been checked first
-    
-    //Create token for the unknown string before the escape character, then track it, as it has already been processed
-    
-    this.tokens[ loop.t_i ].regex = this.tokens[ loop.t_i ].regex.substring( 0, match.index );
-    this.tokens[ loop.t_i ].type = "string";
-    debug.string_tracker[] = loop.t_i; //tracking the already-checked string
-    
-    //increase tokens index by 1 to start searching the unknown and BRAND NEW string for escape SEQUENCES at the beginning, because that is where the escape character "\" is found
-    
-    loop.t_i++;
-    
-    //Does the string following the matching "\" (the remainder of the string following the first character ([0])) from the match way up above have a length that is greater than 0?
-    //i.e. Does the string following the matching "\" have a length greater than 0?
-    
-    if( this.tokens[ loop.t_i ].regex.substring( 1 ).length > 0 )
-    {
-      
-      //Are the first few characters in the following string a SPECIAL escape sequence? (this is the start for the prep of this question, continue downwards for the check itself)
-      //(that matche these prepared regex patterns?):
-        
-      var escapes = [
-          "^(\\d\\d\\d?)", //Octal
-          "^(x[A-Fa-f0-9]{2})", //Hexadecimal
-          "^(u[A-Fa-f0-9]{4})", //Unicode
-          "^(c[A-Za-z])", //Control Character
-          "^([1-9])" //Back Reference
-        ],
-        regex_string; //This is used for creating the regex that finds the escapes
-      
-      //Synthesize "regex_string" from the "escapes" array
-      
-      for(
-        
-        //Reinitialize regex_string (actually escape in this case) index
-        
-        loop.r_i = 0;
-        
-        //If the regex_string index is less than the amount of elements in the escape array, execute the loop
-        
-        loop.r_i > escapes.length;
-        
-        //increment the regex_string index by 1 after each loop
-        
-        loop.r_i++;
-        
-      ){
-        
-        //if the loop condition passes:
-        //self-add to regex_string the separation/beginning character ("|" / "/") followed by the next escape sequence to match for
-        
-        regex_string = regex_string + ( 
-          loop.r_i === 0 ?
-          "/" : "|"
-          )
-          + escapes[ loop.r_i ];
-      }
-      
-      //once the loop finishes through the escpaes array, finish it off with a terminating regex character ("/")
-      
-      regex_string = regex_string + "/";
-      
-      //Are the first few characters in following the escape character a SPECIAL escape sequence? (this is the actual check)
-      
-      if( ( match = ( new RegExp( regex_string ) ).exec( this.tokens[ loop.t_i ].regex.substring( 1 ) ) ) != null )
-      {
-          
-        //Is the SPECIAL escape sequence an octal escape?
-        
-        if( match[ 1 ].length != 0 )
-        {
-          if( this.tokens[ loop.t_i ].regex.substring( match[ 1 ].length ).length > 0 ){
-            this.tokens[ loop.t_i+1 ].regex = this.tokens[ loop.t_i ].regex.substring( match[ 1 ].length );
-            this.tokens[ loop.t_i+1 ].regex = "string";
-          }
-          this.tokens[ loop.t_i ].regex = '\\' + match[ 1 ];
-          this.tokens[ loop.t_i ].type = "escape::octan::len" + match[ 1 ].length;
+        //synthesize the "regex_string" from the "escapes" array
+
+        for(
+
+          //Reinitialize the regex_string (acually escape) index
+
+          loop.r_i = 0;
+
+          //if the escape index is less than the amount of escapes, execute the loop
+
+          loop.r_i < escapes.length;
+
+          //increment the index after each loop
+
+          loop.r_i++;
+
+        ){
+
+          regex_string += ( loop.r_i === 0 ? "/" : "|" ) + escapes[ loop.r_i ];
+
         }
+
+        //at this point regex_string has all necessary characters except for the terminator (and any flags, but we don't need flags)
+
+        regex_string += "/";
+
+        //detector for special escape sequences
+        //NOTE: detection STARTS AT INDEX '1'
+
+        if( ( match = ( new RegExp( regex_string ) ).exec( this.tokens[ loop.dt_i ].regex.substring( 1 ) ) ) != null )
+        {
+
+          //is the SPECIAL ESCAPE sequence an OCTAL ESCAPE?
+
+          if( match[ 1 ].length != 0 )
+          {
+
+            //PREVENTIVE CHECK for NO EMPTY TOKENS creation (if the string after the match is empty, do not create a token for it)
+            //creates unidentified string tokens for the string following the SPECIAL ESCAPE SEQUENCE, if PREVENTIVE CHECK passes
+
+            if( this.tokens[ loop.dt_i ].regex.substring( match[ 1 ].length /*-1 (to get final index) +1 (to make final index non-inclusive)*/ +1 /*include the length of the "\"*/ ).length > 0 )
+            {
+              this.tokens[ loop.dt_i+1 ].regex = this.tokens[ loop.dt_i ].regex.substring( match[ 1 ].length /*-1 (to get final index) +1 (to make final index non-inclusive)*/ +1 /*include the length of the "\"*/ );
+              this.tokens[ loop.dt_i+1 ].type = "string::unidentified";
+            }
+
+            //cut and modify CURRENTLY-BEING-CHECKED token to be the SPECIAL ESCAPE sequence
+
+            this.tokens[ loop.dt_i ].regex = "\\" + match[ 1 ];
+            this.tokens[ loop.dt_i ].type = "escape::octal::len-" + match[ 1 ].length;
+
+          } //OCTAL SPECIAL ESCAPE
+
+          //is the SPECIAL ESCAPE sequence an HEXADECIMAL ESCAPE?
+
+          if( match[ 2 ].length != 0 )
+          {
+
+            //PREVENTIVE CHECK for NO EMPTY TOKENS creation (if the string after the match is empty, do not create a token for it)
+            //creates unidentified string tokens for the string following the SPECIAL ESCAPE SEQUENCE, if PREVENTIVE CHECK passes
+
+            if( this.tokens[ loop.dt_i ].regex.substring( 3 /*-1 (to get final index) +1 (to make final index non-inclusive)*/ +1 /*include the length of the "\"*/ ).length > 0 )
+            {
+              this.tokens[ loop.dt_i+1 ].regex = this.tokens[ loop.dt_i ].regex.substring( 4 /*explanation is in "if" statement*/ );
+              this.tokens[ loop.dt_i+1 ].type = "string::unidentified";
+            }
+
+            //cut and modify CURRENTLY-BEING-CHECKED token to be the SPECIAL ESCAPE sequence
+
+            this.tokens[ loop.dt_i ].regex = "\\" + match[ 2 ];
+            this.tokens[ loop.dt_i ].type = "escape::hexadecimal";
+
+          }
+
+          //AT THIS POINT>>>
+
+          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
+          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
+          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
+          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
+          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
+          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
+          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
+          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
+          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
+          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
+          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
+          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
+          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
+          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
+          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
+          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
+          //NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!! NOT HEXADECIMAL!!!
+
+          //<<<AT THIS POINT<<<
+
+        }
+
+      }
+
+      else //in the case that there are no characters following the "\"
+
+      {}
+
+    } // ESCAPE DETECTOR loop
+
+  } //TOKEN CYCLER loop
+      
         
         //Is the SPECIAL escape sequence a hexadecimal escape?
         
