@@ -44,16 +44,82 @@ function stringToObj( RegExArg ){
   var debug = {
       "group_depth" : 0, //Used for tracking nested groups and classes
       "string_tracker" : [], //Used for tracking UNIDENTIFIED strings. Main and Mini alternate between indeces 0 and 1 respectively
-      "track_sync" //Used for variables that are associated with string tracker (used for looping when string_tracker is being looped over; holds data continuously regardless of the string_tracker loop)
+      "cycler_sync" : { //Used for storing data across loops in the token cycler
+        "detector" : 0
+      },
+      "detector_sync" //Used for storing data across loops in the detector loops
     },
     loop = {
-      "t_i" :, //token index. Main and Mini alternate between indeces 0 and 1 respectively
+      "dt_i" : 0, //tracked token index. Main and Mini alternate between indeces 0 and 1 respectively
       "st_i" : 0, //string_tracker index. Main and Mini alternate between indeces 0 and 1 respectively
       "r_i" : 0 //used for creating regex strings for searching
     };
 
-  //NOW we do escape sequence/character detection
+  //track the main string
   
+  debug.string_tracker[] = 0 //0 is the index of the token that is the original string
+
+  for( //TOKEN CYCLER (loops through possible tokens: tokens that could possibly have undiscovered tokens within them)
+
+    //reinitialize the string tracker index to 0
+
+    loop.st_i;
+
+    //if the amount of checked strings minus 1 (if the currently checking index) is less than the total amount of tracked strings, loop through checks
+
+    loop.st_i < debug.string_tracker.length;
+
+    //after every loop increment the checking index by 1
+
+    loop.st_i++;
+
+  ){
+
+    //Reinitialize quick short hand index to be the currently tracked token index
+
+    loop.dt_i = debug.string_tracker[ loop.st_i ];
+
+    //ESCAPE DETECTOR
+
+    while(
+
+      //update match (match.index) and if it exists,
+
+      ( match = ( new RegExp( "/\\\\/" ) ).exec( this.tokens[ loop.dt_i ].regex ) ) != null &&
+
+      //and if the detection switch (debug.cycler_sync.detector) is set to 0, perform the ESCAPE DETECTOR
+
+      debug.cycler_sync.detector === 0
+
+    ){
+
+      //if match the match is at NOT at the beginning (match.index !== 0) of the string, make the first token be all the junk before the "\", and create a new token that will be a MIXED TOKEN (ESCAPE/UNIDENTIFIED STRING)
+
+      if( match.index !== 0 )
+      {
+
+        //create the new MIXED TOKEN
+
+        this.tokens[ loop.dt_i+1 ].regex = this.tokens[ loop.dt_i ].regex.substring( match.index );
+
+        //Debugger will NOT track this string token, because it is not PARTIALLY AN ESCAPE and AN UNIDENTIFIED STRING (a MIXED TOKEN)
+
+        this.tokens[ loop.dt_i+1 ].type = "string::mixed";
+
+        //Create token for the UNIDENTIFIED STRING that exists before the escape character ("\"), as it has already been processed (it is already being tracked)
+
+        this.tokens[ loop.dt_i ].regex = this.tokens[ loop.dt_i ].regex.substring( 0, match.index );
+        this.tokens[ loop.dt_i ].type = "string::unidentified";
+
+      }
+
+      //it is important to note that this WILL NOT CREATE AN EMPTY STRING TOKEN for the MIXED TOKEN, because the loop condition will not pass if the match is an empty string
+    }
+
+  }
+
+  //NOW we do escape sequence/character detection
+
   for(
     
     //Reinitialize The first used token index
