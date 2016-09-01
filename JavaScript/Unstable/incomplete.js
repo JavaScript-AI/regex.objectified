@@ -49,7 +49,9 @@ function stringToObj( RegExArg ){
       "cycler_sync" : { //Used for storing data across loops in the token cycler
         "detector" : 0
       },
-      "detector_sync" //Used for storing data across loops in the detector loops
+      "detector_sync" : {//Used for storing data across loops in the detector loops
+        "prev_dt_i" : -1 //Used to prevent Detectors from badly looping (issue #31)
+      }
     },
     loop = {
       "dt_i" : 0, //tracked token index. Main and Mini alternate between indeces 0 and 1 respectively
@@ -77,9 +79,10 @@ function stringToObj( RegExArg ){
 
   ){
 
-    //Reinitialize quick short hand index to be the currently tracked token index
+    //Reinitialize quick short hand index to be the currently tracked token index, and the prev_dt_i
 
     loop.dt_i = debug.string_tracker[ loop.st_i ];
+    debug.detector_sync.prev_dt_i = -1; //dt_i can never be equal to -1, so this is a perfect reset, as the detector loops will not execute the first loop if prev_dt_i is mistakenly set to equal dt_i
 
     //ESCAPE DETECTOR
 
@@ -89,11 +92,14 @@ function stringToObj( RegExArg ){
 
       ( match = ( new RegExp( "/\\\\/" ) ).exec( this.tokens[ loop.dt_i ].regex ) ) != null &&
 
+      //at this point if there was no change to loop.dt_i (debug.detector_sync.prev_dt_i === loop.dt_i) set debug.cycler_sync.detector to 1
       //and if the detection switch (debug.cycler_sync.detector) is set to 0, perform the ESCAPE DETECTOR
 
-      debug.cycler_sync.detector === 0
+      ( debug.cycler_sync.detector = debug.detector_sync.prev_dt_i === loop.dt_i ? 1 : 0 ) === 0
 
     ){
+
+      debug.detector_sync.prev_dt_i = loop.dt_i;
 
       //if match the match is NOT at the beginning (match.index !== 0) of the string, make the first token be all the junk before the "\", and create a new token that will be a MIXED TOKEN (ESCAPE/UNIDENTIFIED STRING)
 
