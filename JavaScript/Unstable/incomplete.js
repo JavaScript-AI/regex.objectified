@@ -50,7 +50,8 @@ function stringToObj( RegExArg ){
         "detector" : 0
       },
       "detector_sync" : { //Used for storing data across loops in the detector loops
-        "prev_st__v" : -1 //Used to prevent Detectors from badly looping (issue #31)
+        "prev_st__v" : -1, //Used to prevent Detectors from badly looping (issue #31)
+        "ok_to_reinit" : true //Sometimes loops will request that detector_sync be synced across TOKEN CYCLES, however the default is that it does not get synced, and that it reinitializes after every loop, however prev_st__v will always be reinit'd
       }
     },
     loop = {
@@ -83,7 +84,18 @@ function stringToObj( RegExArg ){
     //Reinitialize quick short hand index to be the currently tracked token index, and reinitialize the prev_st__v
 
     loop.st__v = debug.string_tracker[ loop.st_i ];
-    debug.detector_sync.prev_st__v = -1; //st__v can never be equal to -1, so this is a perfect reset, as the detector loops will not execute the first loop if prev_st__v is mistakenly set to equal st__v
+
+    //reinitialize detector_sync
+
+    if( debug.detector_sync.reinit === true ) //if and when detector_sync needs to be fully reinitialized. will normally happen when detector changes
+    {
+      debug.detector_sync = {
+        "prev_st__v" : -1, //st__v can never be equal to -1, so this is a perfect reset, as the detector loops will not execute the first loop if prev_st__v is mistakenly set to equal st__v
+        "reinit" : true;
+      }
+    }else{
+      debug.detector_sync.prev_st__v = -1;
+    }
 
     //ESCAPE DETECTOR
 
