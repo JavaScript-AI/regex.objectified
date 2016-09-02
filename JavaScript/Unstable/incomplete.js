@@ -103,7 +103,22 @@ function stringToObj( RegExArg ){
       //at this point if there was no change to loop.st__v (debug.detector_sync.prev_st__v === loop.st__v) set debug.cycler_sync.detector to 1
       //and if the detection switch (debug.cycler_sync.detector) is set to 0, perform the ESCAPE DETECTOR
 
-      ( debug.cycler_sync.detector = debug.detector_sync.prev_st__v === loop.st__v ? 1 : 0 ) === 0
+      ( debug.cycler_sync.detector = //parenthesis: assign a value to debug.cycler_sync.detector, then return (that) debug.cycler_sync.detector's value
+
+        ( loop.st_i === debug.string_tracker.length - 1 ? //if the STRING TRACKER INDEX (index of STRING TRACKER) is the last index
+
+          ( debug.detector_sync.prev_dt_i === loop.dt_i ? //and if the STRING TRACKER VALUE (index of token) did not change
+
+            /*incremented value:*/ 1 : //increment the value
+            /*kept/maintained/static value:*/ 0 //otherwise maintain the value at the same state
+
+          ) : //STRING TRACKER VALUE CHANGE?
+
+          /*kept/maintained/static value:*/ 0 //otherwise maintain the value at the same state
+
+        ) //STRING TRACKER INDEX IS LAST?
+
+      ) === /*value associated with detector: (in ESCAPE DETECTOR) 0*/
 
     ){
 
