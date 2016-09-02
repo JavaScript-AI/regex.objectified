@@ -47,7 +47,9 @@ function stringToObj( RegExArg ){
       "group_depth" : 0, //Used for tracking nested groups and classes
       "string_tracker" : [], //Used for tracking UNIDENTIFIED strings
       "cycler_sync" : { //Used for storing data across loops in the token cycler
-        "detector" : 0
+        "detector" : 0, 
+        "is_unfinished_block" : false, //used for block loops when whether the block has been closed
+        "nested_level" : 0 //used for block loops (currently only available for use in the GROUP DETECTOR) for information about nesting level.
       },
       "detector_sync" : { //Used for storing data across loops in the detector loops
         "prev_st__v" : -1 //Used to prevent Detectors from badly looping (issue #31)
