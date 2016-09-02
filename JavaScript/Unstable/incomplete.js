@@ -56,7 +56,8 @@ function stringToObj( RegExArg ){
     loop = {
       "dt_i" : 0, //tracked token index. Main and Mini alternate between indeces 0 and 1 respectively
       "st_i" : 0, //string_tracker index. Main and Mini alternate between indeces 0 and 1 respectively
-      "r_i" : 0 //used for creating regex strings for searching
+      "r_i" : 0, //used for creating regex strings for searching
+      "st_for" : 0 //used for increasing STRING TRACKER VALUES in the TRACKER INCREMENTER (issue #32)
     };
 
   //track the main string
@@ -119,9 +120,30 @@ function stringToObj( RegExArg ){
         this.tokens[ loop.dt_i ].regex = this.tokens[ loop.dt_i ].regex.substring( 0, match.index );
         this.tokens[ loop.dt_i ].type = "string::unidentified";
 
-        //increase THE TOKENS ARRAY INDEX STORED **WITHIN** the string tracker array
+        //increase ALL STRING TRACKER VALUES by 1 as a NEW TOKEN (the MIXED ONE) was INSERTED.
 
-        loop.dt_i = debug.string_tracker[ loop.st_i ] = loop.dt_i + 1;
+        for(
+
+          //reinitialize the INCREMENTATION INDEX to be the current STRING TRACKER INDEX
+
+          loop.st_for = loop.st_i;
+
+          //if the INCREMENTER INDEX is less than the amount of values in the STRING TRACKER, loop through TRACKER INCREMENTATION
+
+          loop.st_for < debug.string_tracker.length;
+
+          //increment the INCREMENTATION INDEX by 1 after every loop
+
+          loop.st_for++;
+
+        ){
+          debug.string_tracker[ loop.st_for ]++;
+        }
+
+        //increase THE TOKENS ARRAY INDEX STORED **WITHIN** the string tracker array
+        //A.K.A. reset the short-hand STRING TRACKER VALUE to the current long-hand STRING TRACKER VALUE
+
+        loop.dt_i = debug.string_tracker[ loop.st_i ];
 
         //it is important to note that this WILL NOT CREATE AN EMPTY STRING TOKEN for the MIXED TOKEN, because the loop condition will not pass if the match is an empty string
 
@@ -196,9 +218,29 @@ function stringToObj( RegExArg ){
               this.tokens[ loop.dt_i+1 ].regex = this.tokens[ loop.dt_i ].regex.substring( match[ 1 ].length /*-1 (to get final index) +1 (to make final index non-inclusive)*/ +1 /*include the length of the "\"*/ );
               this.tokens[ loop.dt_i+1 ].type = "string::unidentified";
 
-              //increase THE TOKENS ARRAY INDEX STORED **WITHIN** the string tracker array
+              //increase ALL STRING TRACKER VALUES by 1 as a NEW TOKEN (the MIXED ONE) was INSERTED.
 
-              loop.dt_i = debug.string_tracker[ loop.st_i ] = loop.dt_i + 1;
+              for(
+
+                //reinitialize the INCREMENTATION INDEX to be the current STRING TRACKER INDEX
+
+                loop.st_for = loop.st_i;
+
+                //if the INCREMENTER INDEX is less than the amount of values in the STRING TRACKER, loop through TRACKER INCREMENTATION
+
+                loop.st_for < debug.string_tracker.length;
+
+                //increment the INCREMENTATION INDEX by 1 after every loop
+
+                loop.st_for++;
+
+              ){
+                debug.string_tracker[ loop.st_for ]++;
+              }
+
+              //reset the short-hand STRING TRACKER VALUE to the current long-hand STRING TRACKER VALUE
+
+              loop.dt_i = debug.string_tracker[ loop.st_i ];
 
             } //PREVENTIVE CHECK DESIGN (issue #26)
 
@@ -222,9 +264,29 @@ function stringToObj( RegExArg ){
               this.tokens[ loop.dt_i+1 ].regex = this.tokens[ loop.dt_i ].regex.substring( 4 /*explanation is in "if" statement*/ );
               this.tokens[ loop.dt_i+1 ].type = "string::unidentified";
 
-              //increase THE TOKENS ARRAY INDEX STORED **WITHIN** the string tracker array
+              //increase ALL STRING TRACKER VALUES by 1 as a NEW TOKEN (the MIXED ONE) was INSERTED.
 
-              loop.dt_i = debug.string_tracker[ loop.st_i ] = loop.dt_i + 1;
+              for(
+
+                //reinitialize the INCREMENTATION INDEX to be the current STRING TRACKER INDEX
+
+                loop.st_for = loop.st_i;
+
+                //if the INCREMENTER INDEX is less than the amount of values in the STRING TRACKER, loop through TRACKER INCREMENTATION
+
+                loop.st_for < debug.string_tracker.length;
+
+                //increment the INCREMENTATION INDEX by 1 after every loop
+
+                loop.st_for++;
+
+              ){
+                debug.string_tracker[ loop.st_for ]++;
+              }
+
+              //reset the short-hand STRING TRACKER VALUE to the current long-hand STRING TRACKER VALUE
+
+              loop.dt_i = debug.string_tracker[ loop.st_i ];
 
             } //PREVENTIVE CHECK DESIGN (issue #26)
 
@@ -248,9 +310,29 @@ function stringToObj( RegExArg ){
               this.tokens[ loop.dt_i+1 ].regex = this.tokens[ loop.dt_i ].regex.substring( 6 /*explanation is in "if" statement*/ );
               this.tokens[ loop.dt_i+1 ].type = "string::unidentified";
 
-              //increase THE TOKENS ARRAY INDEX STORED **WITHIN** the string tracker array
+              //increase ALL STRING TRACKER VALUES by 1 as a NEW TOKEN (the MIXED ONE) was INSERTED.
 
-              loop.dt_i = debug.string_tracker[ loop.st_i ] = loop.dt_i + 1;
+              for(
+
+                //reinitialize the INCREMENTATION INDEX to be the current STRING TRACKER INDEX
+
+                loop.st_for = loop.st_i;
+
+                //if the INCREMENTER INDEX is less than the amount of values in the STRING TRACKER, loop through TRACKER INCREMENTATION
+
+                loop.st_for < debug.string_tracker.length;
+
+                //increment the INCREMENTATION INDEX by 1 after every loop
+
+                loop.st_for++;
+
+              ){
+                debug.string_tracker[ loop.st_for ]++;
+              }
+
+              //reset the short-hand STRING TRACKER VALUE to the current long-hand STRING TRACKER VALUE
+
+              loop.dt_i = debug.string_tracker[ loop.st_i ];
 
             } //PREVENTIVE CHECK DESIGN (issue #26)
 
@@ -274,9 +356,29 @@ function stringToObj( RegExArg ){
               this.tokens[ loop.dt_i+1 ].regex = this.tokens[ loop.dt_i ].regex.substring( 3 /*explanation is in "if" statement*/ );
               this.tokens[ loop.dt_i+1 ].type = "string::unidentified";
 
-              //increase THE TOKENS ARRAY INDEX STORED **WITHIN** the string tracker array
+              //increase ALL STRING TRACKER VALUES by 1 as a NEW TOKEN (the MIXED ONE) was INSERTED.
 
-              loop.dt_i = debug.string_tracker[ loop.st_i ] = loop.dt_i + 1;
+              for(
+
+                //reinitialize the INCREMENTATION INDEX to be the current STRING TRACKER INDEX
+
+                loop.st_for = loop.st_i;
+
+                //if the INCREMENTER INDEX is less than the amount of values in the STRING TRACKER, loop through TRACKER INCREMENTATION
+
+                loop.st_for < debug.string_tracker.length;
+
+                //increment the INCREMENTATION INDEX by 1 after every loop
+
+                loop.st_for++;
+
+              ){
+                debug.string_tracker[ loop.st_for ]++;
+              }
+
+              //reset the short-hand STRING TRACKER VALUE to the current long-hand STRING TRACKER VALUE
+
+              loop.dt_i = debug.string_tracker[ loop.st_i ];
 
             } //PREVENTIVE CHECK DESIGN (issue #26)
 
@@ -300,9 +402,29 @@ function stringToObj( RegExArg ){
               this.tokens[ loop.dt_i+1 ].regex = this.tokens[ loop.dt_i ].regex.substring( 2 /*explanation is in "if" statement*/ );
               this.tokens[ loop.dt_i+1 ].type = "string::unidentified";
 
-              //increase THE TOKENS ARRAY INDEX STORED **WITHIN** the string tracker array
+              //increase ALL STRING TRACKER VALUES by 1 as a NEW TOKEN (the MIXED ONE) was INSERTED.
 
-              loop.dt_i = debug.string_tracker[ loop.st_i ] = loop.dt_i + 1;
+              for(
+
+                //reinitialize the INCREMENTATION INDEX to be the current STRING TRACKER INDEX
+
+                loop.st_for = loop.st_i;
+
+                //if the INCREMENTER INDEX is less than the amount of values in the STRING TRACKER, loop through TRACKER INCREMENTATION
+
+                loop.st_for < debug.string_tracker.length;
+
+                //increment the INCREMENTATION INDEX by 1 after every loop
+
+                loop.st_for++;
+
+              ){
+                debug.string_tracker[ loop.st_for ]++;
+              }
+
+              //reset the short-hand STRING TRACKER VALUE to the current long-hand STRING TRACKER VALUE
+
+              loop.dt_i = debug.string_tracker[ loop.st_i ];
 
             } //PREVENTIVE CHECK DESIGN (issue #26)
 
@@ -327,9 +449,29 @@ function stringToObj( RegExArg ){
             this.tokens[ loop.dt_i+1 ].regex = this.tokens[ loop.dt_i ].regex.substring( 2 /*uses same logic as BACK REFERENCE ^^^*/ );
             this.tokens[ loop.dt_i+1 ].type = "string::unidentified";
 
-            //increase THE TOKENS ARRAY INDEX STORED **WITHIN** the string tracker array
+            //increase ALL STRING TRACKER VALUES by 1 as a NEW TOKEN (the MIXED ONE) was INSERTED.
 
-            loop.dt_i = debug.string_tracker[ loop.st_i ] = loop.dt_i + 1;
+            for(
+
+              //reinitialize the INCREMENTATION INDEX to be the current STRING TRACKER INDEX
+
+              loop.st_for = loop.st_i;
+
+              //if the INCREMENTER INDEX is less than the amount of values in the STRING TRACKER, loop through TRACKER INCREMENTATION
+
+              loop.st_for < debug.string_tracker.length;
+
+              //increment the INCREMENTATION INDEX by 1 after every loop
+
+              loop.st_for++;
+
+            ){
+              debug.string_tracker[ loop.st_for ]++;
+            }
+
+            //reset the short-hand STRING TRACKER VALUE to the current long-hand STRING TRACKER VALUE
+
+            loop.dt_i = debug.string_tracker[ loop.st_i ];
 
           } //PREVENTIVE CHECK DESIGN (issue #26)
 
