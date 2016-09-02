@@ -45,17 +45,17 @@ function stringToObj( RegExArg ){
     ];
   var debug = {
       "group_depth" : 0, //Used for tracking nested groups and classes
-      "string_tracker" : [], //Used for tracking UNIDENTIFIED strings. Main and Mini alternate between indeces 0 and 1 respectively
+      "string_tracker" : [], //Used for tracking UNIDENTIFIED strings
       "cycler_sync" : { //Used for storing data across loops in the token cycler
         "detector" : 0
       },
-      "detector_sync" : {//Used for storing data across loops in the detector loops
+      "detector_sync" : { //Used for storing data across loops in the detector loops
         "prev_st__v" : -1 //Used to prevent Detectors from badly looping (issue #31)
       }
     },
     loop = {
-      "st__v" : 0, //tracked token index. Main and Mini alternate between indeces 0 and 1 respectively
-      "st_i" : 0, //string_tracker index. Main and Mini alternate between indeces 0 and 1 respectively
+      "st__v" : 0, //STRING TRACKER VALUE (tracked token index)
+      "st_i" : 0, //STRING TRACKER INDEX (index of array of tracked tokens)
       "r_i" : 0, //used for creating regex strings for searching
       "st_for" : 0 //used for increasing STRING TRACKER VALUES in the TRACKER INCREMENTER (issue #32)
     };
@@ -80,7 +80,7 @@ function stringToObj( RegExArg ){
 
   ){
 
-    //Reinitialize quick short hand index to be the currently tracked token index, and the prev_st__v
+    //Reinitialize quick short hand index to be the currently tracked token index, and reinitialize the prev_st__v
 
     loop.st__v = debug.string_tracker[ loop.st_i ];
     debug.detector_sync.prev_st__v = -1; //st__v can never be equal to -1, so this is a perfect reset, as the detector loops will not execute the first loop if prev_st__v is mistakenly set to equal st__v
@@ -138,7 +138,7 @@ function stringToObj( RegExArg ){
 
         ){
           debug.string_tracker[ loop.st_for ]++;
-        }
+        } //TRACKER INCREMENTER (issue #32)
 
         //increase THE TOKENS ARRAY INDEX STORED **WITHIN** the string tracker array
         //A.K.A. reset the short-hand STRING TRACKER VALUE to the current long-hand STRING TRACKER VALUE
@@ -236,7 +236,7 @@ function stringToObj( RegExArg ){
 
               ){
                 debug.string_tracker[ loop.st_for ]++;
-              }
+              } //TRACKER INCREMENTER (issue #32)
 
               //reset the short-hand STRING TRACKER VALUE to the current long-hand STRING TRACKER VALUE
 
@@ -282,7 +282,7 @@ function stringToObj( RegExArg ){
 
               ){
                 debug.string_tracker[ loop.st_for ]++;
-              }
+              } //TRACKER INCREMENTER (issue #32)
 
               //reset the short-hand STRING TRACKER VALUE to the current long-hand STRING TRACKER VALUE
 
@@ -328,7 +328,7 @@ function stringToObj( RegExArg ){
 
               ){
                 debug.string_tracker[ loop.st_for ]++;
-              }
+              } //TRACKER INCREMENTER (issue #32)
 
               //reset the short-hand STRING TRACKER VALUE to the current long-hand STRING TRACKER VALUE
 
@@ -374,7 +374,7 @@ function stringToObj( RegExArg ){
 
               ){
                 debug.string_tracker[ loop.st_for ]++;
-              }
+              } //TRACKER INCREMENTER (issue #32)
 
               //reset the short-hand STRING TRACKER VALUE to the current long-hand STRING TRACKER VALUE
 
@@ -420,7 +420,7 @@ function stringToObj( RegExArg ){
 
               ){
                 debug.string_tracker[ loop.st_for ]++;
-              }
+              } //TRACKER INCREMENTER (issue #32)
 
               //reset the short-hand STRING TRACKER VALUE to the current long-hand STRING TRACKER VALUE
 
@@ -467,7 +467,7 @@ function stringToObj( RegExArg ){
 
             ){
               debug.string_tracker[ loop.st_for ]++;
-            }
+            } //TRACKER INCREMENTER (issue #32)
 
             //reset the short-hand STRING TRACKER VALUE to the current long-hand STRING TRACKER VALUE
 
