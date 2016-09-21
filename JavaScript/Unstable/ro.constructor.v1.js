@@ -132,23 +132,31 @@ function RegExSearch( RegExArg )
 	//This is the Constructor's Debug Object - it is used for containing all varialbes relevant to the constructor, but not to the tokens (outside of the native regex ones listed above in the beginnning of the script):
 
 	var debug = {
+		
+		//VOCAB: String Tracker: Used for keeping track of unidentified string tokens
+		//VOCAB: Token Cycler: Loop that loops over tracked string tokens
+		//VOCAB: Token Cycle: One loop within the Token Cycler
+		//VOCAB: Cycler Sync: Used for storing variables over several Token Cycles
+		//	-Token Lineotransferent: used for lineotransfering tokens to the search object
+		//	-Nestable-Group Token Depth: self-explanatory. tracks depth of the currently being detected group
+		//		-This is also useful for detecting whether a group-block was unfinished or not
+		//VOCAB: Lineotransfer Sync: Used for storing variables over several loops of a lineotransferent
+		//	-Previous String Tracker Value: used when a tracker value is to be changed. This can be used to detect a change
+		//VOCAB: Incremental Sync: Used for storing increases data over certain loops. This has a significant tie tp the incrementation statement of for loops
 
-		"string_tracker" : [], //Used for tracking unidentified string tokens
-		"cycler_sync" : { //Used for storing data over different Cycler Loops
-
-				//DRAFT 3: According to Draft 3 and above of regex.objectified, the cycler_sync object is to contain 3 properties, detector number, group depth, and a boolean identifying if a block (group) is unfinished
-
-			"detector" : 0 //Used for identifying what detector to use
-			"group_depth" : 0, //Used for tracking how deep a detected group is
-			"is_unfinished_block" : false, //Used for keeping track of the fact that atleat one group is unfinished
+		"string_tracker" : [], //String Tracker
+		"cycler_sync" : { //Cycler sync
+		
+			"lineotransferent" : 0 //Token Lineotransferent
+			"group_depth" : 0, //Nestable-Group Token Depth
 
 		},
-		"detector_sync" : { //Used for storing data over different Detector Loops
+		"lineotransfer_sync" : { //Lineotransfer Sync
 
-			"prev_string_tracker_value": -1 //Used to help detect whether the current value existing at the currently-being checked string tracker index has changed, if it did not, detector will stop looping, so that the next token can be cycled through
+			"prev_string_tracker_value": -1 //Previous String Tracker Value
 
 		},
-		"incremental_sync" : {
+		"incremental_sync" : { //Incremental Sync
 
 			"string_tracker_id_num" : 0, //Incremental value also referred to as the current string tracker index that is used to help access the current string tracker value
 			"native_regex_part_index" : 0, //Incremental value used to assemple native regex parts into a complete native regex object
