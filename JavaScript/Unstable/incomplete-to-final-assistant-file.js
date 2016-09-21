@@ -1,44 +1,4 @@
-      //The following section is for detecting whether the following characters (after the "\" taken from the match) form a string with a length greater than 0 (the following string is not an empty string)?
-      //The tokens beginning (due to the above if/else script) now is at the place where the MATCH starts
 
-      if( this.tokens[ loop.t_i ].regex.substring( 1 ).length > 0 ){
-
-        //the following is a preparatory script for a detector that checks for special escape sequences
-        //the following array contains those sequences (in regex)
-
-        var escapes = [
-            "^(\\d\\d\\d?)", //Octal
-            "^(x[A-Fa-f0-9]{2})", //Hexadecimal
-            "^(u[A-Fa-f0-9]{4})", //Unicode
-            "^(c[A-Za-z])", //Control Character
-            "^([1-9])" //Back Reference
-          ];
-
-        //synthesize the "regex_string" from the "escapes" array
-
-        for(
-
-          //Reinitialize the regex_string (acually escape) index
-
-          loop.r_i = 0;
-
-          //if the escape index is less than the amount of escapes, execute the loop
-
-          loop.r_i < escapes.length;
-
-          //increment the index after each loop
-
-          loop.r_i++;
-
-        ){
-
-          regex_string += ( loop.r_i === 0 ? "/" : "|" ) + escapes[ loop.r_i ];
-
-        }
-
-        //at this point regex_string has all necessary characters except for the terminator (and any flags, but we don't need flags)
-
-        regex_string += "/";
 
         //detector for special escape sequences
         //NOTE: detection STARTS AT INDEX '1'

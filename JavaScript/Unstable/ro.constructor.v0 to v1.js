@@ -1,138 +1,3 @@
-/**************************************************************************************************************************************************
-
-This Library is licensed under the MIT/X11 License
-
-Copyright (c) 2016 Nicholas Jackson
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
-to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
-and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-**************************************************************************************************************************************************/
-
-/**************************************************************************************************************************************************
-
-Legend for comments:
-
-- "FUTURE RELEASES" : comment about what will be changed to the API in the future
-- "DRAFT [#]" : comment about draft compliance
-- "ERROR HANDLING" : comment denoting when a type of error is going to be handled/created
-
-**************************************************************************************************************************************************/
-
-//Convert a String (or a Regexp which will immediately be converted to a String) to a RegExSearch Object
-
-//FUTURE RELEASES are supposed to be able to convert JSON-compliant JavaScript Objects to RegExSearcn Objects
-
-function RegExSearch( RegExArg )
-{
-	
-	var native_regexp, //Used for creating RegExp Objects dynamically
-		native_match; //Used for finding matches to RegExp Objects
-
-	//Yes, regex.objectified requires native regex to be built in to the language, that is why it is referred to as an "extension upon regex"
-
-	//NOW we initialize the process (and initialize the new RegExSearch Object)
-
-		/**************************************************************************************************************************************************
-
-		DRAFT 3 (PART I and II):
-
-		- Argument Validation
-		- Flag Detection
-
-		**************************************************************************************************************************************************/
-
-		//DRAFT 3: According to Draft 3 and above of regex.objectified, the process (workflow) must start with an argument-validation system
-
-	//ERROR HANDLING: -ERROR- RegExArg must either be a native regex object or a string
-
-	//if RegExArg is a RegExp Object, convert it to a string, otherwise if it is a string, validate the string, otherwise log the above error and return "false" signifying a failed construction
-
-	if( RegExArg instanceof RegExp ) //if RegExArg is a RegExp Object,
-	{
-
-		//convert it to a string
-
-		RegExArg = RegExArg.toString();
-
-	}
-	else if( RegExArg typeof String ) //otherwise if it is a string,
-	{
-
-		//validate the string
-
-		//ERROR HANDLING: -ERROR- RegExArg must start with a "/" and must end with a "/" or a "/" followed by a flag
-
-		//if the starting character in RegExArg is a "/", cut it off as it is not needed, else log the above error and return "false" signifying a failed construction
-
-		if( RegExArg.charAt(0) === "/" ) //if the starting character in RegExArg is a "/",
-		{
-
-			//cut it off as it is not needed
-
-			RegExArg = RegExArg.substring( 1 );
-
-		}
-		else
-		{
-
-			//log the above error and return "false" signifying a failed construction
-
-			console.log("RegExSearch(): -ERROR- RegExArg must start with a \"/\" and must end with a \"/\" or a \"/\" followed by a flag");
-			return false;
-
-		}
-
-		//ERROR HANDLING (PART II): -ERROR- RegExArg must start with a "/" and must end with a "/" or a "/" followed by a flag
-
-			//DRAFT 3: According to Draft 3 and above of regex.objectified, the flag section of the regex will have its own property, and this property can be an empty string
-
-		//FUTURE RELEASES will have more extensive flags, and flags will be able to be attached to any token, not just the main search object
-
-		//if the ending characters in RegExArg are a "/" or a "/" followed by a flag, attach the flags to the RegExSearch Object as a property ("this.flag") and cut this ending off as it is not needed,
-		//else log the above error and return "false" signifying a failed construction
-
-		if( ( native_match = ( new RegExp( "/\\/([A-Za-z])/" ) ).exec( RegExArg ) ) ) //if the ending characters in RegExArg are a "/" or a "/" followed by a flag,
-		{
-
-			//attach the flags to the RegExSearch Object as a property ("this.flag")
-
-		    this.flags = match[ 1 ];
-
-		    //cut the ending off as it is not needed
-
-		    RegExArg = RegExArg.substring( 0, ( RegExArg.length -2 -match[1].length ) )
-
-		}
-		else
-		{
-
-			//log the above error and return "false" signifying a failed construction
-
-			console.log("RegExSearch(): -ERROR- RegExArg must start with a \"/\" and must end with a \"/\" or a \"/\" followed by a flag");
-			return false;
-
-		}
-
-	}
-	else
-	{
-
-		//log the above error and return "false" signifying a failed construction
-
-		console.log("RegExSearch(): -ERROR- RegExArg must either be a native regex object or a string");
-		return false;
-
-	}
-
 	//The primer token is initialized here
 	//The primer token is pretty much the main token (which is pretty much the RegExSearch Object minus the Search methods)
 
@@ -377,6 +242,115 @@ function RegExSearch( RegExArg )
 				].type = "string::mixed";
 
 			} //Preceding Unidentified String Detector (FAILED)
+
+			//This is where the Sequential Detection begins
+
+			//We start by determining if there is even a sequence after the "\"
+			//(The following section is for detecting whether the following characters (after the "\" taken from the match) form a string with a length greater than 0 (the following string is not an empty string))
+
+			if( this.tokens[										//a (any) sequence exists?
+
+				debug.string_tracker[
+
+					debug.incremental_sync.string_tracker_id_num
+
+				]
+
+			].regex.substring( 1 ).length > 0 )						//a (any) sequence exists?
+			{
+
+				//Next we detect for these defined sequences:
+
+				native_regexp_parts =  [ //escape sequences
+					"^(\\d\\d\\d?)", //Octal
+					"^(x[A-Fa-f0-9]{2})", //Hexadecimal
+					"^(u[A-Fa-f0-9]{4})", //Unicode
+					"^(c[A-Za-z])", //Control Character
+					"^([1-9])" //Back Reference
+				]
+
+				for( //Synthesize native_regexp from the native_regexp_parts array
+
+					//Reinitialize the regex_string (acually escape) index
+
+					debug.incremental_sync.native_regex_part_index = 0;
+
+					//if the escape index is less than the amount of escapes, execute the loop
+
+					debug.incremental_sync.native_regex_part_index < native_regexp_parts.length;
+
+					//increment the index after each loop
+
+					debug.incremental_sync.native_regex_part_index++;
+
+				){ //Synthesize native_regexp from the native_regexp_parts array
+
+					native_regexp += ( //add to the native_regexp string the following:
+
+						debug.incremental_sync.native_regex_part_index === 0 ? "/" : "|" //if this is the first loop, start the string with the regex starting character "/", otherwise add the regex or character "|"
+
+					) + native_regexp_parts[ //then add the current/corresponding native regexp part to the native_regexp string
+
+						debug.incremental_sync.native_regex_part_index
+
+					]; //then add the current/corresponding native regexp part to the native_regexp string (cont./end.)
+
+				} //Synthesize native_regexp from the native_regexp_parts array
+
+		        //at this point native_regexp has all necessary characters/parts except for the terminator (and any flags, but we don't need flags)
+
+		        native_regexp += "/";
+
+		        //Next we detect for the aboce defined sequences /\
+
+        		//NOTE: detection starts at index '1', because the following sequence detection does not have to incude the first character "\", so it is therefore excluded from the following search:
+
+        		if( 
+        			( native_match = ( new RegExp( native_regexp ) ).exec( this.tokens[
+
+						debug.string_tracker[
+
+							debug.incremental_sync.string_tracker_id_num
+
+						]
+
+					].regex.substring( 1 ) ) ) != null 
+				){
+
+        			//is the SPECIAL ESCAPE sequence an OCTAL ESCAPE?
+
+        			if( native_match[ 1 ].length != 0 )
+        			{
+
+        				//This is where we handle the Trailing Unidentified String, this process incorporates the Preventive Check Design from previous drafts
+
+        				if( //Preventive Check (There is a Trailing Unidentified String) (Tracker Moving)
+        					this.tokens[
+
+								debug.string_tracker[
+
+									debug.incremental_sync.string_tracker_id_num
+
+								]
+
+							].regex.substring( match[ 1 ].length /*-1 (to get final index) +1 (to make final index non-inclusive)*/ +1 /*include the length of the "\"*/ ).length > 0
+						){ //Preventive Check (There is a Trailing Unidentified String)
+
+        					
+
+        				} //Preventive Check (There is a Trailing Unidentified String)
+        				else
+						{ //Preventive Check (There is NO Trailing Unidentified String) (Tracker Deletion)
+
+
+
+						} //Preventive Check (There is NO Trailing Unidentified String)
+
+        			}
+
+				}
+
+			}
 
 		}
 
