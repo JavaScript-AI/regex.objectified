@@ -52,8 +52,8 @@ function RegExSearch( RegExArg )
 	}
 
 	//VOCAB: (Argumentative) Lineotransfer: (verb) to pass possession and linear position of certain parts of the argument to the new search object
-	//	-Lineotransferrent: (noun:physical) the process (object) that passes possession and linear position of certain parts of the argument to the new search object
-	//	-Lineotransferrence: (noun:conceptual) the process (act) of passing possession and linear position of certain parts of the argument to the new search object
+	//	-Lineotransferent: (noun:physical) the process (object) that passes possession and linear position of certain parts of the argument to the new search object
+	//	-Lineotransference: (noun:conceptual) the process (act) of passing possession and linear position of certain parts of the argument to the new search object
 	//VOCAB: Argument Validation: the process of making sure that the argument passed to the constructor is acceptable and usable
 	//VOCAB: Flag and Argumentative Content Lineotransfer: the process of lineotransferring the flag data from the non-flag argument content over to the new search object
 
@@ -115,7 +115,7 @@ function RegExSearch( RegExArg )
 	} // (END) Basic Argument Validation (FAILED)
 
 	//VOCAB: (R.O; Search; Match) Token: a contextual piece of a Search or Match Object
-	//VOCAB: Priming Lineotransfer: This is the Lineotransfer that occurs after Flag Lineotransferrence and is the first Lineotransfer to transfer content to a Token
+	//VOCAB: Priming Lineotransfer: This is the Lineotransfer that occurs after Flag Lineotransference and is the first Lineotransfer to transfer content to a Token
 	//	-This Lineotransfer is the only Token Lineotransfer to occur outside the Token Cycler, and is immediately marked as an Unidentified String Token
 	//VOCAB: Priming Token: Token created by the Priming Lineotransfer
 
@@ -140,6 +140,7 @@ function RegExSearch( RegExArg )
 		//VOCAB: Token Cycle: One loop within the Token Cycler
 		//VOCAB: Cycler Sync: Used for storing variables over several Token Cycles
 		//	-Token Lineotransferent: used for lineotransfering tokens to the search object
+		//		-Token Lineotransferent Number: Used for selecting lineotransferent
 		//	-Nestable-Group Token Depth: self-explanatory. tracks depth of the currently being detected group
 		//		-This is also useful for detecting whether a group-block was unfinished or not
 		//VOCAB: Lineotransfer Sync: Used for storing variables over several loops of a lineotransferent
@@ -152,7 +153,7 @@ function RegExSearch( RegExArg )
 		"string_tracker" : [], //String Tracker
 		"cycler_sync" : { //Cycler sync
 		
-			"lineotransferent" : 0 //Token Lineotransferent
+			"lineotransferent" : 0 //Token Lineotransferent Number
 			"group_depth" : 0, //Nestable-Group Token Depth
 
 		},
@@ -180,11 +181,52 @@ function RegExSearch( RegExArg )
 
 	for( //Token Cycler
 
+		//Priming initialization Clause:
 
+		debug.incremental_sync.string_tracker_id_num = 0;
+
+		//Cycler Clause:
+
+		debug.incremental_sync.string_tracker_id_num < debug.string_tracker.length && //Determines if Cycler should continue/start
+		( debug.lineotransfer_sync = { // (BEG) Reinitialize Lineotransfer Sync
+
+			"prev_string_tracker_value": -1
+
+		} ) != null // (END) Reinitialize Lineotransfer Sync
+
+		//Incremental Clause:
+
+		debug.incremental_sync.string_tracker_id_num++;
 
 	){
 
+		//VOCAB: Detoken:
+		//	-(noun): Token that content is lineotransferred from
+		//	-(verb): Lineotransfer from
+		//		-Singular Detoken Lineotransfer (non-groupable): Lineotransfer from a single token
+		//			-Sequential Lineotransfer: Lineotransfer a sequence of characters from a single detoken
+		//			-Shorthand Lineotransfer: Lineotransfer a single character from a single detoken
+		//		-Multiple Detoken Lineotransfer (groupable): Lineotransger from multiple tokens
+		//			-NOTE: Groupable Detoken Lineotransfers will always be followed with a Supertoken Assembly, possibly and most probably meaning that Multiple Detoken Lineotrnafers will do the same
+		//VOCAB: Atoken:
+		//	-(noun): Token that content is lineotransferred to
+		//		-Supertoken (Multiple-Atoken Atoken): Token containing other tokens
+		//		-Subtoken: Token contained by a Supertoken
+		//	-(verb): Lineotransfer to
+		//		-Supertoken Assembly/Multiple Atoken Lineotransfer: Lineotransfer from a detoken into an atoken
+		//VOCAB: Lineotransfer Clause: Clause determining whether a lineotranfer loop should execute, while simultaneously assigning values to variables
+		//VOCAB: Matcher Clause: Lineotransfer Clause determining whether a lineotranfer loop should execute, while simultaneously assigning values to variables that deal with matching
+		//VOCAB: Switcher Clause: Lineotransfer Clause determining whether a lineotranfer loop should execute, while simultaneously assigning values to variables that deal with switching
 
+		while(
+
+
+
+		){
+
+
+			
+		}
 
 	}
 
