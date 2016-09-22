@@ -117,6 +117,7 @@ function RegExSearch( RegExArg )
 	//VOCAB: (R.O; Search; Match) Token: a contextual piece of a Search or Match Object
 	//VOCAB: Priming Lineotransfer: This is the Lineotransfer that occurs after Flag Lineotransferrence and is the first Lineotransfer to transfer content to a Token
 	//	-This Lineotransfer is the only Token Lineotransfer to occur outside the Token Cycler, and is immediately marked as an Unidentified String Token
+	//VOCAB: Priming Token: Token created by the Priming Lineotransfer
 
 	this.tokens = [
 
@@ -134,6 +135,7 @@ function RegExSearch( RegExArg )
 	var debug = {
 		
 		//VOCAB: String Tracker: Used for keeping track of unidentified string tokens
+		//	-String Subtracker: Used when a token is a collection of tokens itself
 		//VOCAB: Token Cycler: Loop that loops over tracked string tokens
 		//VOCAB: Token Cycle: One loop within the Token Cycler
 		//VOCAB: Cycler Sync: Used for storing variables over several Token Cycles
@@ -143,6 +145,9 @@ function RegExSearch( RegExArg )
 		//VOCAB: Lineotransfer Sync: Used for storing variables over several loops of a lineotransferent
 		//	-Previous String Tracker Value: used when a tracker value is to be changed. This can be used to detect a change
 		//VOCAB: Incremental Sync: Used for storing increases data over certain loops. This has a significant tie tp the incrementation statement of for loops
+		//	-String Tracker Identification Number: Incremental value also referred to as the current string tracker index that is used to help access the current string tracker value
+		//	-Native Regex Part Index: Incremental value used to assemple native regex parts into a complete native regex object
+		//	-Alteration String Tracker Identification Number: Incremental value used to help apply changes to string tracker values that are not the current string tracker value (String Tracker Alteration)
 
 		"string_tracker" : [], //String Tracker
 		"cycler_sync" : { //Cycler sync
@@ -158,15 +163,29 @@ function RegExSearch( RegExArg )
 		},
 		"incremental_sync" : { //Incremental Sync
 
-			"string_tracker_id_num" : 0, //Incremental value also referred to as the current string tracker index that is used to help access the current string tracker value
-			"native_regex_part_index" : 0, //Incremental value used to assemple native regex parts into a complete native regex object
-			"string_tracker_id_num_not_current" : 0 //Incremental value used to help apply changes to string tracker values that ar not the current string tracker value
+			"string_tracker_id_num" : 0, //String Tracker Identification Number
+			"native_regex_part_index" : 0, //Native Regex Part Index
+			"string_tracker_id_num_alteration" : 0 //Alteration String Tracker Identification Number
 
 		}
 
 	}
 
+	//Track the Primer Token
+
+	debug.string_tracker[] = {
+		"value" : 0, //0 is the index of the primer token
+		"subtracker" : [] //Empty String Subtracker
+	}
+
+	for( //Token Cycler
 
 
+
+	){
+
+
+
+	}
 
 } // (END) RegExSearch Constructor
