@@ -1,45 +1,7 @@
 //arbitrary comment
-		while( //Escape Detector
+		while(
 
-			//Matcher Clause
-
-			(
-				native_match = ( 
-					new RegExp( "/\\\\/" )
-				).exec(
-					this.tokens[
-
-						debug.string_tracker[
-
-							debug.incremental_sync.string_tracker_id_num
-
-						]
-
-					].regex
-				)
-			) != null &&
-
-			//Switcher Clause
-
-			(
-				debug.cycler_sync.detector = (
-					debug.cycler_sync.detector === 0
-
-					? (
-						debug.detector_sync.prev_string_tracker_value 
-						
-						<
-						
-						debug.string_tracker[
-
-							debug.incremental_sync.string_tracker_id_num
-
-						]
-
-						? 0 : 1
-					) : debug.cycler_sync.detector
-				)
-			) === 0
+			/**/
 		){
 
 			//if match the match is NOT at the beginning (match.index !== 0) of the string, make the first token be all the junk before the "\", and create a new token that will be a Mixed Token (Escape/Unidentified)
