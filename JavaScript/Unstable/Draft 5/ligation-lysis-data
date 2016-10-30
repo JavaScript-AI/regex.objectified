@@ -1,0 +1,80 @@
+{
+	"ro_language" : [
+		{
+			"name" : "slashed_engraved",
+			"ligation" : {
+				"enabled" : "false"
+			},
+			"lysis" : {
+				"opening" : ["\\\\`"]
+			}
+		},
+		{
+			"name" : "engraved",
+			"ligation" : {
+				"enabled" : "true",
+				"allow_depth" : "false",
+				"ligand_syntax" : ["strings","escapes::engraver"]
+			},
+			"lysis" : {
+				"opening" : ["`"],
+				"closing" : {"`"}
+			}
+		},
+		{
+			"name" : "slashed",
+			"ligation" : {
+				"enabled" : "false"
+			},
+			"lysis" : {
+				"opening" : []
+			}
+		},
+		{
+			"name" : "bracketed",
+			"ligation" : {
+				"enabled" : "true",
+				"allow_depth" : "false",
+				"ligand_syntax" : ["strings","escapes"]
+			},
+			"lysis" : {
+				"opening" : [],
+				"closing" : {}
+			}
+		},
+		{
+			"name" : "shorthand",
+			"ligation" : {
+				"enabled" : "false"
+			},
+			"lysis" : {
+				"opening" : []
+			}
+		},
+		{
+			"name" : "parenthetical",
+			"ligation" : {
+				"enabled" : "true",
+				"allow_depth" : "true",
+				"ligand_syntax" : "all"
+			},
+			"lysis" : {
+				"opening" : [],
+				"closing" : {}
+			}
+		},
+		{
+			"name" : "braced",
+			"ligation" : {
+				"enabled" : "true",
+				"allow_depth" : "false",
+				"ligand_syntax" : "attributes"
+			},
+			"lysis" : {
+				"opening" : [],
+				"closing" : {}
+			}
+		}
+	],
+	"ro_extension" : []
+}

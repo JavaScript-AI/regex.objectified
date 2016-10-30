@@ -1,0 +1,166 @@
+[
+	{
+		"name" : "regex.objectified",
+		"parser-types" : [
+			{
+				"name" : "slashed_engraver",
+				"shared-pieces" : [
+					{
+						"parse-type" : "string",
+						"value" : "\\`"
+					}
+				],
+				"token-types" : [
+					{
+						"name" : "escape::escaped_engraver",
+						"synthetic-data" : {
+							"enabled" : false
+						},
+						"analytic-data" : {
+							"opening-pieces" : [
+								{
+									"shared-piece" : "0",
+								}
+							]
+						}
+					}
+				]
+			},
+			{
+				"name" : "engraved",
+				"shared-pieces" : [
+					{
+						"parse-type" : "string",
+						"value" : "`"
+					}
+				],
+				"token-types" : [
+					{
+						"name" : "escape::engraved",
+						"synthetic-data" : {
+							"enabled" : true,
+							"allow_depth" : false,
+							"allow_types" : ["string", "escape::escaped_engraver"],
+							"force_strings" : true
+						},
+						"analytic-data" : {
+							"opening-pieces" : [
+								{
+									"shared-piece" : "0",
+								}
+							],
+							"closing-pieces" : [
+								{
+									"shared-piece" : "0",
+								}
+							]
+						}
+					}
+				]
+			},
+			{
+				"name" : "slashed",
+				"shared-pieces" : [
+					{
+						"parse-type" : "string",
+						"value" : "\\"
+					}
+				],
+				"token-types" : [
+					{
+						"name" : "escape::octal",
+					},
+					{
+						"name" : "escape::hexadecimal"
+					},
+					{
+						"name" : "escape::unicode"
+					},
+					{
+						"name" : "escape::control_character"
+					},
+					{
+						"name" : "reference::classic_reference"
+					}
+				]
+			},
+			{
+				"name" : "bracketed",
+				"token-types" : [
+					{
+						"name" : "class::character"
+					}
+				]
+			},
+			{
+				"name" : "braced",
+				"token-types" : [
+					{
+						"name" : "lazy_attribute"
+					},
+					{
+						"name" : "attribute"
+					}
+				]
+			},
+			{
+				"name" : "shorthand",
+				"token-types" : [
+					{
+						"name" : "anchor::beginning"
+					},
+					{
+						"name" : "anchor::end"
+					},
+					{
+						"name" : "class::any_character"
+					},
+					{
+						"name" : "lazy_attribute::quantifier::more_than_zero"
+					},
+					{
+						"name" : "lazy_attribute::quantifier::any_amount"
+					},
+					{
+						"name" : "attribute::quantifier::more_than_zero"
+					},
+					{
+						"name" : "attribute::quantifier::any_amount"
+					},
+					{
+						"name" : "alternation::optional"
+					},
+					{
+						"name" : "alternation::alternator"
+					}
+				]
+			},
+			{
+				"name" : "parenthetical",
+				"token-types" : [
+					{
+						"name" : "group::capture_group"
+					},
+					{
+						"name" : "group::negative_group"
+					},
+					{
+						"name" : "group::non-capture_group"
+					},
+					{
+						"name" : "group::lookahead"
+					},
+					{
+						"name" : "group::negative_lookahead"
+					},
+					{
+						"name" : "group::lookbehind"
+					},
+					{
+						"name" : "group::negative_lookbehind"
+					}
+				]
+			}
+		]
+	}
+]

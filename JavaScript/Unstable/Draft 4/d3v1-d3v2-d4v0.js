@@ -12,33 +12,8 @@
 
 	// (END) NIU initiation
 
-	/*|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
-	VOCAB: Loop Clauses: Conditional expressions, that also dynamically set variables
-		-Hybrid Clauses: Loop Clauses formed from other related Loop Clauses
-		-Initiation Clause: Used for setting loop-related varialbes before any of the loops execute
-		-Incremental Clause: Used for setting/incrementing loop-related variables after each and all of the loops execute
-	VOCAB: Lineotransfer:
-		-(verb): to pass posession and linear position of certain parts of the argument to the new search object
-		-(noun): a process of passing possession and linear position of certain parts of the argument to the new search object
-		-(-ent)(noun): passer of posession and linear position of certain parts of the argument to the new search object
-		-(-ence)(noun): the phenomenon of passing posession and linear position of certain parts of the argument to the new search object
-	VOCAB: Token: a contextual piece of a Search or Match Object
-	VOCAB: Initial Search Constructor Lineotransference:
-		-Argument Validation: the process of making sure that the argument passed to the constructor is acceptable and usable
-			-NOTE: Argument Validation must include a method for checking NIU, as NIU regex is compatible with R.O. regex
-		-Flag Lineotransfer: the lineotransfer responsible for transferring the flag data over to the search object
-		-Priming Lineotransfer: the lineotransfer responsible for transferring the search data over to the first search token, therefore creating the first unidentified string token
-			-NOTE: This Lineotransfer is the only Token Lineotransfer to occur outside the Token Cycler, and is immediately marked as an Unidentified String Token
-			-Priming Token: Token created by the Priming Lineotransfer
-
-	|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||*/
-
-	/*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-	SECTION: Initial Search Constructor Lineotransference
-	&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&*/
-
-	// (BEG) Initial Search Constructor Lineotransference
+	
 
 		/*&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 		SECTION: Argument Validation
