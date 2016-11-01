@@ -4,22 +4,24 @@
 		"parser-types" : [
 			{
 				"name" : "slashed_engraver",
-				"shared-pieces" : [
+				"shared-parts" : [
 					{
 						"parse-type" : "string",
 						"value" : "\\`"
 					}
 				],
+				"shared-properties" : {
+					"synthetic-data" : {
+						"enabled" : false
+					}
+				},
 				"token-types" : [
 					{
 						"name" : "escape::escaped_engraver",
-						"synthetic-data" : {
-							"enabled" : false
-						},
 						"analytic-data" : {
-							"opening-pieces" : [
+							"opening-parts" : [
 								{
-									"shared-piece" : "0",
+									"shared-part" : 0,
 								}
 							]
 						}
@@ -28,7 +30,7 @@
 			},
 			{
 				"name" : "engraved",
-				"shared-pieces" : [
+				"shared-parts" : [
 					{
 						"parse-type" : "string",
 						"value" : "`"
@@ -39,19 +41,20 @@
 						"name" : "escape::engraved",
 						"synthetic-data" : {
 							"enabled" : true,
+							"inner-parsing" : "regex.objectified",
 							"allow_depth" : false,
 							"allow_types" : ["string", "escape::escaped_engraver"],
 							"force_strings" : true
 						},
 						"analytic-data" : {
-							"opening-pieces" : [
+							"opening-parts" : [
 								{
-									"shared-piece" : "0",
+									"shared-part" : 0,
 								}
 							],
-							"closing-pieces" : [
+							"closing-parts" : [
 								{
-									"shared-piece" : "0",
+									"shared-part" : 0,
 								}
 							]
 						}
@@ -60,27 +63,91 @@
 			},
 			{
 				"name" : "slashed",
-				"shared-pieces" : [
+				"shared-parts" : [
 					{
 						"parse-type" : "string",
 						"value" : "\\"
 					}
 				],
+				"shared-properties" : {
+					"synthetic-data" : {
+						"enabled" : false
+					}
+					"analytic-data" : {
+						"opening-parts" : {
+							"0" : {
+								"shared-part" : 0
+							}
+						}
+					}
+				},
 				"token-types" : [
 					{
 						"name" : "escape::octal",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "regex",
+									"value" : "\d\d\d?"
+								}
+							]
+						}
 					},
 					{
-						"name" : "escape::hexadecimal"
+						"name" : "escape::hexadecimal",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "x"
+								},
+								{
+									"parse-type" : "regex",
+									"value" : "[A-F0-9]{2}"
+								}
+							]
+						}
 					},
 					{
-						"name" : "escape::unicode"
+						"name" : "escape::unicode",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "u"
+								},
+								{
+									"parse-type" : "regex",
+									"value" : "[A-F0-9]{4}"
+								}
+							]
+						}
 					},
 					{
-						"name" : "escape::control_character"
+						"name" : "escape::control_character",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "c"
+								},
+								{
+									"parse-type" : "regex",
+									"value" : "[A-Z]"
+								}
+							]
+						}
 					},
 					{
-						"name" : "reference::classic_reference"
+						"name" : "reference::classic_reference",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "regex",
+									"value" : "[0-9]"
+								}
+							]
+						}
 					}
 				]
 			},
@@ -88,15 +155,72 @@
 				"name" : "bracketed",
 				"token-types" : [
 					{
-						"name" : "class::character"
+						"name" : "class::character",
+						"synthetic-data" : {
+							"enabled" : true,
+							"inner-parsing" : "regex.objectified",
+							"allow_depth" : false,
+							"allow_types" : ["string", "escape"],
+							"force_strings" : true
+						},
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "["
+								}
+							],
+							"closing-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "]"
+								}
+							]
+						}
 					}
 				]
 			},
 			{
 				"name" : "braced",
+				"shared-parts" : [
+					{
+						"parse-type" : "string",
+						"value" : "{"
+					},
+					{
+						"parse-type" : "string",
+						"value" : "}"
+					}
+				],
+				"shared-properties" : {
+					"synthetic-data" : {
+						"enabled" : true,
+						"inner-parsing" : "regex.objectified.quantifier"
+					}
+					"analytic-data" : {
+						"opening-parts" : {
+							"0" : {
+								"shared-part" : 0
+							}
+						}
+						"opening-parts" : {
+							"0" : {
+								"shared-part" : 1
+							}
+						}
+					}
+				},
 				"token-types" : [
 					{
-						"name" : "lazy_attribute"
+						"name" : "lazy_attribute",
+						"analytic-data" : {
+							"closing-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "?"
+								}
+							]
+						}
 					},
 					{
 						"name" : "attribute"
@@ -105,59 +229,213 @@
 			},
 			{
 				"name" : "shorthand",
+				"shared-properties" : {
+					"synthetic-data" : {
+						"enabled" : false
+					}
+				},
 				"token-types" : [
 					{
-						"name" : "anchor::beginning"
+						"name" : "anchor::beginning",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "^"
+								}
+							]
+						}
 					},
 					{
-						"name" : "anchor::end"
+						"name" : "anchor::end",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "$"
+								}
+							]
+						}
 					},
 					{
-						"name" : "class::any_character"
+						"name" : "class::any_character",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "."
+								}
+							]
+						}
 					},
 					{
-						"name" : "lazy_attribute::quantifier::more_than_zero"
+						"name" : "lazy_attribute::quantifier::more_than_zero",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "+?"
+								}
+							]
+						}
 					},
 					{
-						"name" : "lazy_attribute::quantifier::any_amount"
+						"name" : "lazy_attribute::quantifier::any_amount",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "*?"
+								}
+							]
+						}
 					},
 					{
-						"name" : "attribute::quantifier::more_than_zero"
+						"name" : "attribute::quantifier::more_than_zero",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "+"
+								}
+							]
+						}
 					},
 					{
-						"name" : "attribute::quantifier::any_amount"
+						"name" : "attribute::quantifier::any_amount",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "*"
+								}
+							]
+						}
 					},
 					{
-						"name" : "alternation::optional"
+						"name" : "alternation::optional",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "?"
+								}
+							]
+						}
 					},
 					{
-						"name" : "alternation::alternator"
+						"name" : "alternation::alternator",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "|"
+								}
+							]
+						}
 					}
 				]
 			},
 			{
 				"name" : "parenthetical",
+				"shared-parts" : [
+					{
+						"parse-type" : "string",
+						"value" : "("
+					},
+					{
+						"parse-type" : "string",
+						"value" : ")"
+					}
+				],
+				"shared-properties" : {
+					"synthetic-data" : {
+						"enabled" : true,
+						"inner-parsing" : "regex.objectified",
+						"allow_depth" : true
+					}
+					"analytic-data" : {
+						"opening-parts" : {
+							"0" : {
+								"shared-part" : 0
+							}
+						}
+						"opening-parts" : {
+							"0" : {
+								"shared-part" : 1
+							}
+						}
+					}
+				},
 				"token-types" : [
 					{
 						"name" : "group::capture_group"
 					},
 					{
-						"name" : "group::negative_group"
+						"name" : "group::neg_group",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "?:!"
+								}
+							]
+						}
 					},
 					{
-						"name" : "group::non-capture_group"
+						"name" : "group::non-capture_group",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "?:"
+								}
+							]
+						}
 					},
 					{
-						"name" : "group::lookahead"
+						"name" : "group::pos_lookahead",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "?>="
+								}
+							]
+						}
 					},
 					{
-						"name" : "group::negative_lookahead"
+						"name" : "group::neg_lookahead",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "?>!"
+								}
+							]
+						}
 					},
 					{
-						"name" : "group::lookbehind"
+						"name" : "group::pos_lookbehind",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "?<="
+								}
+							]
+						}
 					},
 					{
-						"name" : "group::negative_lookbehind"
+						"name" : "group::neg_lookbehind",
+						"analytic-data" : {
+							"opening-parts" : [
+								{
+									"parse-type" : "string",
+									"value" : "?<!"
+								}
+							]
+						}
 					}
 				]
 			}
